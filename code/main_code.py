@@ -13,7 +13,7 @@ def main():
     data = np.column_stack([data_x1, data_x2 ,data_x3])
     normalize_data,mean_data,std_data=normalize.normalize_gaussian(data)
     pca_model,pca_vector,pca_variance,pca_variance_ratio,latent_data= algorithm_dimension.pca_train(normalize_data,pca_components=3)
-    plot_figure.pca_plot(normalize_data,pca_vector,pca_variance_ratio)
+    plot_figure.pca_plot_2D(normalize_data,pca_vector,pca_variance_ratio)
     # int('s')
 
 

@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-def pca_plot(data,pca_vector,pca_variance_ratio):
+def pca_plot_2D(data,pca_vector,pca_variance_ratio):
     pca_vector_dimension = pca_vector.shape[1]
     if pca_vector_dimension == 2:
         latent_data = np.matmul(data, pca_vector)
@@ -29,7 +29,7 @@ def pca_plot(data,pca_vector,pca_variance_ratio):
         plt.show()
         print('finished plotting')
     else:
-        print('pca_vector_dimension must be 2 or 3')
+        print('pca_vector_dimension must be 2 ')
 
 
 
