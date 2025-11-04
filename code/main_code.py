@@ -8,14 +8,14 @@ def main():
     rng = np.random.default_rng(42)
     n = 150
     data_x1 = rng.normal(0, 1, n)
-    data_x2 = 2 * data_x1 + rng.normal(0, 0.3, n)  # correlated with x1
+    data_x2 = 2 * data_x1 + rng.normal(0, 1, n)  # correlated with x1
     data_x3 = 3 * data_x1 +2 *data_x2
     data = np.column_stack([data_x1, data_x2 ,data_x3])
     normalize_data,mean_data,std_data=normalize.normalize_gaussian(data)
-    pca_model,pca_vector,pca_variance,pca_variance_ratio,latent_data= algorithm_dimension.pca_train(normalize_data,pca_components=3)
+    pca_model,pca_vector,pca_variance,pca_variance_ratio,latent_data= algorithm_dimension.pca_train(normalize_data,pca_components=2)
     plot_figure.pca_plot_2D(normalize_data,pca_vector,pca_variance_ratio)
     # int('s')
-
+    print('s')
 
 if __name__ == '__main__':
     main()
