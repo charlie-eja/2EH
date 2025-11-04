@@ -21,6 +21,5 @@ def main():
     print(mean_data)
     print("標準差")
     print(std_data)
-    int('s')
 if __name__ == "__main__":
     main()

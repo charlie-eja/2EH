@@ -14,8 +14,6 @@ def main():
     normalize_data,mean_data,std_data=normalize.normalize_gaussian(data)
     pca_model,pca_vector,pca_variance,pca_variance_ratio,latent_data= algorithm_dimension.pca_train(normalize_data,pca_components=2)
     plot_figure.pca_plot_2D(normalize_data,pca_vector,pca_variance_ratio)
-    # int('s')
-    print('s')
 
 if __name__ == '__main__':
     main()
