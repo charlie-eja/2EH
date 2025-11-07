@@ -7,7 +7,7 @@ def normalize_gaussian(data):
     std_data[std_data==0]=0.01
     normalize_data = (data_np - mean_data) /std_data
     return normalize_data,mean_data,std_data
-def main():
+def normalize_test():
     data = [[1, 2, 3],
             [2, 3, 4],
             [3, 4, 5],
@@ -22,4 +22,4 @@ def main():
     print("標準差")
     print(std_data)
 if __name__ == "__main__":
-    main()
+    normalize_test()

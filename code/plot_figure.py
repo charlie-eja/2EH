@@ -38,7 +38,7 @@ def pca_plot_2D(data,pca_vector,pca_variance_ratio):
 
 
 
-def main():
+def plot_test():
     # 假資料
     data = np.array([[1, 2, 3],
                   [4, 5, 6],
@@ -46,4 +46,4 @@ def main():
                   [10, 11, 12],])
 
 if __name__=='__main__':
-    main()
+    plot_test()
