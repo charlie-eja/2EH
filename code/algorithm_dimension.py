@@ -11,17 +11,14 @@ def pca_train(data,pca_components=2):
     return pca_model,pca_vector,pca_variance,pca_variance_ratio,latent_data
 
 
-
-
-
-
-def main():
+def main(): #Avoid using main function
     # 假資料
     data = np.array([[1, 2, 3],
                   [4, 5, 6],
                   [7, 8, 9],
                   [10, 11, 12],])
 
-    pca_components=pca_train(data)
+    pca_components=pca_train(data
+                             )
 if __name__=='__main__':
     main()
