@@ -12,9 +12,6 @@ def pca_train(data,pca_components=2):
 
 
 
-
-
-
 def pca_train_test(): #Avoid using main function
     # 假資料
     data = np.array([[1, 2, 3],

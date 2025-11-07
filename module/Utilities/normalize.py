@@ -1,6 +1,6 @@
 import numpy as np
 def normalize_gaussian(data):
-    # 預設進來的數據為PD list numpy
+    # default input data  PD list numpy   (sample * variables)
     data_np = np.array(data)
     mean_data = np.mean(data_np, axis=0)
     std_data = np.std(data_np, axis=0)
