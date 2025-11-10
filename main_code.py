@@ -1,7 +1,7 @@
 import numpy as np
-from module.Utilities import normalize
+from module.Utilities import normalize ,error_callback
 from module.dim_reduce import PCA as PCA_EJ ,UMAP as UMAP_EJ ,tSNE as tSNE_EJ
-from module.plot_figure import PCA_plot , UMPA_plot ,tSNE_plot
+from module.plot_figure import PCA_plot , UMPA_plot , tSNE_plot
 from sklearn.datasets import load_iris
 
 def simulation_pca():
@@ -22,7 +22,12 @@ def simulation_tsne():
     tSNE_EJ.tsne_mapping(data=normalize_data,n_components=2,perplexity=30,random_state=42,)
     tSNE_plot.tsne_plot_2D(data=normalize_data,labels=y)
 
+
+
 def main():
-    simulation_umap()
+    try:
+        simulation_tsne()
+    except Exception as e:
+        error_callback.print_project_trace(e)
 if __name__ == '__main__':
     main()
