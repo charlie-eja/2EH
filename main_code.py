@@ -7,8 +7,9 @@ from sklearn.datasets import load_iris
 def simulation_pca():
     x, y = load_iris(return_X_y=True)
     normalize_data,mean_data,std_data= normalize.normalize_gaussian(data=x)
-    pca_model,pca_vector,pca_variance,pca_variance_ratio,latent_data= PCA_EJ.pca_train(data=normalize_data)
-    PCA_plot.pca_plot_2D(data=normalize_data,pca_vector=pca_vector,pca_variance_ratio=pca_variance_ratio)
+    pca_model,pca_vector,pca_variance,pca_variance_ratio,latent_data = (
+        PCA_EJ.pca_train(data=normalize_data,n_components=2,))
+    PCA_plot.pca_plot_2D(data=normalize_data,pca_vector=pca_vector,pca_variance_ratio=pca_variance_ratio,labels=None)
 
 def simulation_umap():
     x, y = load_iris(return_X_y=True)
@@ -26,7 +27,7 @@ def simulation_tsne():
 
 def main():
     try:
-        simulation_tsne()
+        simulation_pca()
     except Exception as e:
         error_callback.print_project_trace(e)
 if __name__ == '__main__':

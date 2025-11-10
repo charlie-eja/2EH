@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-def pca_plot_2D(data,pca_vector,pca_variance_ratio):
+def pca_plot_2D(data,pca_vector,pca_variance_ratio,labels=None):
     try:
         pca_vector_dimension = pca_vector.shape[1]
         if pca_vector_dimension == 2:
@@ -10,7 +10,7 @@ def pca_plot_2D(data,pca_vector,pca_variance_ratio):
             pca_variance_ratio_x=np.round(pca_variance_ratio[0],2)
             pca_variance_ratio_y=np.round(pca_variance_ratio[1],2)
             plt.figure(figsize=(6, 4))
-            plt.scatter(x, y, color='blue', label='Data Points')  # 散點圖
+            plt.scatter(x, y,c=labels, label='Data Points')  # 散點圖
             plt.xlabel(f'X  {str(pca_variance_ratio_x)} %')
             plt.ylabel(f'Y  {str(pca_variance_ratio_y)} %')
             plt.title('2D Data Visualization')

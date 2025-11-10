@@ -1,7 +1,7 @@
 from sklearn.decomposition import PCA
 import numpy as np
-def pca_train(data,pca_components=2):
-    pca = PCA(n_components=pca_components)
+def pca_train(data,n_components=2):
+    pca = PCA(n_components=n_components)
     pca_model=pca.fit(data)
     pca_vector=pca_model.components_.T
     pca_variance=pca_model.explained_variance_
