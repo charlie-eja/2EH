@@ -10,7 +10,7 @@ def simulation_pca():
     normalize_data,mean_data,std_data= normalize.normalize_gaussian(data=x)
     pca_model,pca_vector,pca_variance,pca_variance_ratio,latent_data = (
         PCA_EJ.pca_train(data=normalize_data,n_components=3,))
-    PCA_plot.pca_plot_3D(data=normalize_data,pca_vector=pca_vector,pca_variance_ratio=pca_variance_ratio,labels=y)
+    PCA_plot.pca_plot_2D(data=normalize_data,pca_vector=pca_vector,pca_variance_ratio=pca_variance_ratio,labels=y)
 
 def simulation_umap():
     x, y = load_iris(return_X_y=True)
@@ -24,11 +24,9 @@ def simulation_tsne():
     tSNE_EJ.tsne_mapping(data=normalize_data,n_components=3,perplexity=30,random_state=42,)
     tSNE_plot.tsne_plot_3D(data=normalize_data,labels=y)
 
-
-
 def main():
     try:
-        simulation_tsne()
+        simulation_pca()
     except Exception as e:
         error_callback.print_project_trace(e)
     # data=pd.read_excel(r'D:\Pycharm Project\2EH\data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
