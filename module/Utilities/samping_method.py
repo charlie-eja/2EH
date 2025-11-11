@@ -53,7 +53,7 @@ def time_sampling(data,start_time=None,end_time=None,interval_count=None,time_in
         start_index=0
     else:
         start_time = pd.to_datetime(start_time)
-        idx = excel_time[excel_time > start_time].index
+        idx = excel_time[excel_time >= start_time].index
         if len(idx) == 0:
             start_index = None
         else:
@@ -63,7 +63,7 @@ def time_sampling(data,start_time=None,end_time=None,interval_count=None,time_in
         end_index=-1
     else:
         end_time = pd.to_datetime(end_time)
-        idx = excel_time[excel_time < end_time].index
+        idx = excel_time[excel_time <= end_time].index
         if len(idx) == 0:
             end_index = None
         else:
