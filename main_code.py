@@ -28,7 +28,7 @@ def simulation_tsne():
 
 def main():
     try:
-        simulation_umap()
+        simulation_tsne()
     except Exception as e:
         error_callback.print_project_trace(e)
     # data=pd.read_excel(r'D:\Pycharm Project\2EH\data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
