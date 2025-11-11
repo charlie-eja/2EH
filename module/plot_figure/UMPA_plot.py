@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def umap_plot_2D(data,labels=None,plot_samping=-1):
+def umap_plot_2D(data,labels=None,plot_samping=-1,figure_name='umap_plot'):
     plt.figure(figsize=(6, 5))
     plt.scatter(data[:, 0], data[:, 1], c=labels)
 
@@ -13,10 +13,10 @@ def umap_plot_2D(data,labels=None,plot_samping=-1):
     plt.xlabel("UMAP-1")
     plt.ylabel("UMAP-2")
     plt.tight_layout()
-    plt.savefig('umap_plot.png', dpi=150)
+    plt.savefig(figure_name+'.png', dpi=150)
     plt.show()
 
-def umap_plot_2D_color(data,plot_samping=-1):
+def umap_plot_2D_color(data,plot_samping=-1,figure_name='umap_plot_colored'):
     plt.figure(figsize=(6, 5))
     order_colors = np.arange(len(data))
     sc = plt.scatter(data[:, 0], data[:, 1], c=order_colors, cmap='viridis')
@@ -32,11 +32,11 @@ def umap_plot_2D_color(data,plot_samping=-1):
     plt.tight_layout()
     cbar = plt.colorbar(sc)
     cbar.set_label('Order / Index')
-    plt.savefig('umap_plot_colored.png', dpi=150)
+    plt.savefig(figure_name+'.png', dpi=150)
     plt.show()
     print('finished UMAP plotting')
 
-def umap_plot_3D(data,labels=None,plot_samping=-1):
+def umap_plot_3D(data,labels=None,plot_samping=-1,figure_name='umap_plot_3D'):
     fig = plt.figure(figsize=(6, 5))
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(data[:, 0], data[:, 1], data[:, 2], c=labels,)
@@ -50,10 +50,10 @@ def umap_plot_3D(data,labels=None,plot_samping=-1):
     ax.set_ylabel("UMAP-2")
     ax.set_zlabel("UMAP-3")
     plt.tight_layout()
-    plt.savefig('umap_plot_3D.png', dpi=150)
+    plt.savefig(figure_name+'.png', dpi=150)
     plt.show()
 
-def umap_plot_3D_color(data,plot_samping=-1):
+def umap_plot_3D_color(data,plot_samping=-1,figure_name='umap_plot_3D_colored'):
     fig = plt.figure(figsize=(8, 6))
     ax = fig.add_subplot(111, projection='3d')
     order_colors = np.arange(len(data))
@@ -72,6 +72,6 @@ def umap_plot_3D_color(data,plot_samping=-1):
     cbar = plt.colorbar(sc, ax=ax, pad=0.1, shrink=0.8)
     cbar.set_label('Order / Index')
     plt.tight_layout()
-    plt.savefig('umap_plot_3D_colored.png', dpi=150)
+    plt.savefig(figure_name+'.png', dpi=150)
     plt.show()
     print('finished UMAP 3D plotting')

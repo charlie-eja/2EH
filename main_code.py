@@ -9,10 +9,10 @@ def simulation_pca(x,y=None):
     # x, y = load_iris(return_X_y=True)
     normalize_data,mean_data,std_data= normalize.normalize_gaussian(data=x)
     pca_model,pca_vector,pca_variance,pca_variance_ratio,latent_data = (
-        PCA_EJ.pca_train(data=normalize_data,n_components=3,))
-    PCA_plot.pca_plot_3D(
+        PCA_EJ.pca_train(data=normalize_data,n_components=2,))
+    PCA_plot.pca_plot_2D(
         data=normalize_data,pca_vector=pca_vector,pca_variance_ratio=pca_variance_ratio,plot_samping=5,labels=y)
-    PCA_plot.pca_plot_3D_color(
+    PCA_plot.pca_plot_2D_color(
         data=normalize_data,pca_vector=pca_vector,pca_variance_ratio=pca_variance_ratio,plot_samping=5)
 
 def simulation_umap(x,y=None):
@@ -25,9 +25,9 @@ def simulation_umap(x,y=None):
 def simulation_tsne(x,y=None):
     # x, y = load_iris(return_X_y=True)
     normalize_data, mean_data, std_data = normalize.normalize_gaussian(data=x)
-    tSNE_EJ.tsne_mapping(data=normalize_data,n_components=3,perplexity=30,random_state=42,)
-    tSNE_plot.tsne_plot_3D(data=normalize_data,labels=y,plot_samping=5,)
-    tSNE_plot.tsne_plot_3D_color(data=normalize_data,plot_samping=5,)
+    tSNE_EJ.tsne_mapping(data=normalize_data,n_components=2,perplexity=30,random_state=42,)
+    tSNE_plot.tsne_plot_2D(data=normalize_data,labels=y,plot_samping=5,)
+    tSNE_plot.tsne_plot_2D_color(data=normalize_data,plot_samping=5,)
 
 def main():
     # try:
@@ -38,10 +38,11 @@ def main():
     data=pd.read_excel(r'D:\Pycharm Project\2EH\data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
     # interval_data=samping_method.interval_sampling(data=data,interval_count=5,start_index=1)
     interval_data = samping_method.time_sampling(
-        data, interval_count=3600, start_time='2023-01-01', end_time='2023-02-01 ')
+        data, interval_count=3600, start_time='2023-01-01', end_time='2023-07-01 ')
     interval_data_np=interval_data.iloc[:, 1:].to_numpy(dtype=float)
-    simulation_tsne(x=interval_data_np)
-
+    # simulation_pca(x=interval_data_np)
+    # simulation_tsne(x=interval_data_np)
+    simulation_umap(x=interval_data_np)
     print('end')
     # except Exception as e:
     #     error_callback.print_project_trace(e)

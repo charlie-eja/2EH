@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def pca_plot_2D(data,pca_vector,pca_variance_ratio,labels=None,plot_samping=-1):
+def pca_plot_2D(data,pca_vector,pca_variance_ratio,labels=None,plot_samping=-1,figure_name='pca_plot'):
 
     latent_data = np.matmul(data, pca_vector)
     x = latent_data[:,0]
@@ -30,11 +30,11 @@ def pca_plot_2D(data,pca_vector,pca_variance_ratio,labels=None,plot_samping=-1):
     if (y_max - y_min) < 0.5:
         ax.set_ylim(-0.3, 0.3)
 
-    plt.savefig('pca_plot.png', dpi=150)
+    plt.savefig(figure_name+'.png', dpi=150)
     plt.show()
     print('finished plotting')
 
-def pca_plot_3D(data,pca_vector,pca_variance_ratio,labels=None,plot_samping=-1):
+def pca_plot_3D(data,pca_vector,pca_variance_ratio,labels=None,plot_samping=-1,figure_name='pca_plot_3D'):
 
     latent_data = np.matmul(data, pca_vector)  # (N x 3)
     x = latent_data[:, 0]
@@ -69,11 +69,11 @@ def pca_plot_3D(data,pca_vector,pca_variance_ratio,labels=None,plot_samping=-1):
         ax.set_zlim(-0.3, 0.3)
 
     plt.tight_layout()
-    plt.savefig('pca_plot_3D.png', dpi=150)
+    plt.savefig(figure_name+'.png', dpi=150)
     plt.show()
     print('finished 3D plotting')
 
-def pca_plot_2D_color(data,pca_vector,pca_variance_ratio,plot_samping=-1):
+def pca_plot_2D_color(data,pca_vector,pca_variance_ratio,plot_samping=-1,figure_name='pca_plot_colored'):
 
     latent_data = np.matmul(data, pca_vector)
     x = latent_data[:, 0]
@@ -103,11 +103,11 @@ def pca_plot_2D_color(data,pca_vector,pca_variance_ratio,plot_samping=-1):
     if (y_max - y_min) < 0.5:
         ax.set_ylim(-0.3, 0.3)
 
-    plt.savefig('pca_plot_colored.png', dpi=150)
+    plt.savefig(figure_name+'.png', dpi=150)
     plt.show()
     print('finished plotting')
 
-def pca_plot_3D_color(data,pca_vector,pca_variance_ratio,plot_samping=-1):
+def pca_plot_3D_color(data,pca_vector,pca_variance_ratio,plot_samping=-1,figure_name='pca_plot_3D_colored'):
 
     latent_data = np.matmul(data, pca_vector)  # (N x 3)
     x = latent_data[:, 0]
@@ -144,7 +144,7 @@ def pca_plot_3D_color(data,pca_vector,pca_variance_ratio,plot_samping=-1):
     cbar = plt.colorbar(sc, ax=ax, pad=0.1, shrink=0.8)
     cbar.set_label('Order / Index')
     plt.tight_layout()
-    plt.savefig('pca_plot_3D_colored.png', dpi=150)
+    plt.savefig(figure_name+'.png', dpi=150)
     plt.show()
     print('finished 3D plotting')
 

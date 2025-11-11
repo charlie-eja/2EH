@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def tsne_plot_2D(data,labels=None,sample=30,plot_samping=-1):
+def tsne_plot_2D(data,labels=None,sample=30,plot_samping=-1,figure_name='t-SNE_plot'):
     plt.figure(figsize=(6, 5))
     plt.scatter(data[:, 0], data[:, 1], c=labels, s=sample)
     for i in range(0,len(data),plot_samping):
@@ -11,10 +11,10 @@ def tsne_plot_2D(data,labels=None,sample=30,plot_samping=-1):
     plt.xlabel("t-SNE-1")
     plt.ylabel("t-SNE-2")
     plt.tight_layout()
-    plt.savefig('t-SNE_plot.png', dpi=150)
+    plt.savefig(figure_name+'.png', dpi=150)
     plt.show()
 
-def tsne_plot_2D_color(data,plot_samping=-1):
+def tsne_plot_2D_color(data,plot_samping=-1,figure_name='t-SNE_plot_colored'):
     plt.figure(figsize=(6, 5))
     order_colors = np.arange(len(data))
     sc = plt.scatter(data[:, 0], data[:, 1], c=order_colors, cmap='viridis')
@@ -30,7 +30,7 @@ def tsne_plot_2D_color(data,plot_samping=-1):
     plt.tight_layout()
     cbar = plt.colorbar(sc)
     cbar.set_label('Order / Index')
-    plt.savefig('t-SNE_plot_colored.png', dpi=150)
+    plt.savefig(figure_name+'.png', dpi=150)
     plt.show()
 
     print('finished t-SNE plotting')
@@ -38,7 +38,7 @@ def tsne_plot_2D_color(data,plot_samping=-1):
 
 
 
-def tsne_plot_3D(data,labels=None,plot_samping=-1):
+def tsne_plot_3D(data,labels=None,plot_samping=-1,figure_name='t-SNE_plot_3D'):
     fig = plt.figure(figsize=(6, 5))
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(data[:, 0], data[:, 1], data[:, 2], c=labels)
@@ -52,10 +52,10 @@ def tsne_plot_3D(data,labels=None,plot_samping=-1):
     ax.set_ylabel("t-SNE-2")
     ax.set_zlabel("t-SNE-3")
     plt.tight_layout()
-    plt.savefig('t-SNE_plot_3D.png', dpi=150)
+    plt.savefig(figure_name+'.png', dpi=150)
     plt.show()
 
-def tsne_plot_3D_color(data,plot_samping=-1):
+def tsne_plot_3D_color(data,plot_samping=-1,figure_name='t-SNE_plot_3D_colored'):
     fig = plt.figure(figsize=(8, 6))
     ax = fig.add_subplot(111, projection='3d')
     order_colors = np.arange(len(data))
@@ -74,5 +74,5 @@ def tsne_plot_3D_color(data,plot_samping=-1):
     cbar = plt.colorbar(sc, ax=ax, pad=0.1, shrink=0.8)
     cbar.set_label('Order / Index')
     plt.tight_layout()
-    plt.savefig('t-SNE_plot_3D_colored.png', dpi=150)
+    plt.savefig(figure_name+'.png', dpi=150)
     plt.show()
