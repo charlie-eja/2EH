@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import plotly.graph_objects as go
 
 def pca_plot_2D(data,pca_vector,pca_variance_ratio,labels=None,plot_samping=-1,figure_name='pca_plot'):
 
@@ -12,8 +13,8 @@ def pca_plot_2D(data,pca_vector,pca_variance_ratio,labels=None,plot_samping=-1,f
 
     plt.figure(figsize=(6, 4))
     plt.scatter(x, y,c=labels, label='Data Points')
-    plt.xlabel(f'X  {str(pca_variance_ratio_x)} %')
-    plt.ylabel(f'Y  {str(pca_variance_ratio_y)} %')
+    plt.xlabel(f'PC1  {str(pca_variance_ratio_x)} %')
+    plt.ylabel(f'PC2  {str(pca_variance_ratio_y)} %')
     plt.title('2D Data Visualization')
     plt.legend()
     plt.grid(True)
@@ -72,6 +73,78 @@ def pca_plot_3D(data,pca_vector,pca_variance_ratio,labels=None,plot_samping=-1,f
     plt.savefig(figure_name+'.png', dpi=150)
     plt.show()
     print('finished 3D plotting')
+
+def pca_plot_3D_html(data,pca_vector,pca_variance_ratio,labels=None,plot_samping=-1,figure_name='pca_plot_3D'):
+
+    latent_data = np.matmul(data, pca_vector)  # (N x 3)
+    x = latent_data[:, 0]
+    y = latent_data[:, 1]
+    z = latent_data[:, 2]
+
+    pca_variance_ratio_x = np.round(pca_variance_ratio[0], 2)
+    pca_variance_ratio_y = np.round(pca_variance_ratio[1], 2)
+    pca_variance_ratio_z = np.round(pca_variance_ratio[2], 2)
+
+    fig = go.Figure()
+
+    fig.add_trace(
+        go.Scatter3d(
+            x=x,
+            y=y,
+            z=z,
+            mode='markers',
+            marker=dict(
+                size=3,
+                color=labels,
+                colorscale='Viridis',
+                opacity=0.8,
+                colorbar=dict(title='Label')
+            ),
+            name='Data Points'
+        )
+    )
+
+    indices = np.arange(0, len(x), plot_samping)
+    fig.add_trace(
+        go.Scatter3d(
+            x=x[indices],
+            y=y[indices],
+            z=z[indices],
+            mode='text',
+            text=[str(i) for i in indices],
+            textposition='top center',
+            showlegend=False
+        )
+    )
+
+    fig.update_layout(
+        title='3D PCA Visualization',
+        scene=dict(
+            xaxis_title=f'PC1  {pca_variance_ratio_x} %',
+            yaxis_title=f'PC2  {pca_variance_ratio_y} %',
+            zaxis_title=f'PC3  {pca_variance_ratio_z} %',
+        ),
+        margin=dict(l=0, r=0, b=0, t=40)
+    )
+
+    x_min, x_max = x.min(), x.max()
+    y_min, y_max = y.min(), y.max()
+    z_min, z_max = z.min(), z.max()
+    scene = {}
+    if (x_max - x_min) < 0.5:
+        scene.setdefault('xaxis', {})['range'] = [-0.3, 0.3]
+    if (y_max - y_min) < 0.5:
+        scene.setdefault('yaxis', {})['range'] = [-0.3, 0.3]
+    if (z_max - z_min) < 0.5:
+        scene.setdefault('zaxis', {})['range'] = [-0.3, 0.3]
+
+    if scene:
+        fig.update_layout(scene=scene)
+
+    html_name = 'html/' + figure_name + '.html'
+    fig.write_html(html_name)
+    print('finished 3D plotting, saved as', html_name)
+
 
 def pca_plot_2D_color(data,pca_vector,pca_variance_ratio,plot_samping=-1,figure_name='pca_plot_colored'):
 
@@ -148,25 +221,93 @@ def pca_plot_3D_color(data,pca_vector,pca_variance_ratio,plot_samping=-1,figure_
     plt.show()
     print('finished 3D plotting')
 
+def pca_plot_3D_color_html(data,pca_vector,pca_variance_ratio,plot_samping=-1,figure_name='pca_plot_3D_colored'):
 
-def pca_plot_2D_variable_vector(pca_vector,pca_variance_ratio,ax=None, overlab=True):
-    if overlab:
-        if ax is None:
-            raise ValueError("overlab=True need figure information ")
-        target_ax = ax
-    else:
-        plt.figure(figsize=(6, 4))
-        target_ax = plt.gca()
+    latent_data = np.matmul(data, pca_vector)
+    x = latent_data[:, 0]
+    y = latent_data[:, 1]
+    z = latent_data[:, 2]
+
+    pca_variance_ratio_x = np.round(pca_variance_ratio[0], 2)
+    pca_variance_ratio_y = np.round(pca_variance_ratio[1], 2)
+    pca_variance_ratio_z = np.round(pca_variance_ratio[2], 2)
+
+    order_colors = np.arange(len(x))
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter3d(
+        x=x,
+        y=y,
+        z=z,
+        mode='markers',
+        marker=dict(
+            size=3,
+            color=order_colors,
+            colorscale='Viridis',
+            opacity=0.85,
+            colorbar=dict(title='Order / Index')
+        )
+    ))
+
+    indices = np.arange(0, len(x), plot_samping)
+    fig.add_trace(go.Scatter3d(
+        x=x[indices],
+        y=y[indices],
+        z=z[indices],
+        mode='text',
+        text=[str(i) for i in indices],
+        textposition='top center',
+        showlegend=False
+    ))
+
+    x_min, x_max = x.min(), x.max()
+    y_min, y_max = y.min(), y.max()
+    z_min, z_max = z.min(), z.max()
+
+    scene = {}
+
+    if (x_max - x_min) < 0.5:
+        scene.setdefault('xaxis', {})['range'] = [-0.3, 0.3]
+    if (y_max - y_min) < 0.5:
+        scene.setdefault('yaxis', {})['range'] = [-0.3, 0.3]
+    if (z_max - z_min) < 0.5:
+        scene.setdefault('zaxis', {})['range'] = [-0.3, 0.3]
+
+    fig.update_layout(
+        title='3D PCA Visualization (Color = Order)',
+        scene=dict(
+            xaxis_title=f'PC1 {pca_variance_ratio_x} %',
+            yaxis_title=f'PC2 {pca_variance_ratio_y} %',
+            zaxis_title=f'PC3 {pca_variance_ratio_z} %',
+            **scene
+        ),
+        margin=dict(l=0, r=0, t=40, b=0)
+    )
+
+    html_name = 'html/' + figure_name + '.html'
+    fig.write_html(html_name)
+    print('finished 3D plotting, saved as', html_name)
 
 
+def pca_plot_2D_variable_vector(pca_vector,pca_variance_ratio,vector_name):
+    pca_variance_ratio_x = np.round(pca_variance_ratio[0], 2)
+    pca_variance_ratio_y = np.round(pca_variance_ratio[1], 2)
 
-    x_line = np.linspace(-1, 1, 100)
-    target_ax.plot(x_line, x_line, linestyle='--', label='Extra Plot')
-
-    if not overlab:
-        target_ax.legend()
-        target_ax.grid(True)
-        plt.show()
+    pca_vector_max=np.max(pca_vector,axis=0)
+    pca_vector_plot_points=pca_vector/pca_vector_max/1.05
+    origin_x, origin_y = 0, 0
+    plt.figure(figsize=(6, 4))
+    for i, (x, y) in enumerate(pca_vector_plot_points, start=0):
+        plt.plot([origin_x, x], [origin_y, y],'k')
+        plt.text(x, y, str(vector_name[i]), fontsize=8, color='red')
+    xs, ys = zip(*pca_vector_plot_points)
+    plt.xlabel(f'PC1  {str(pca_variance_ratio_x)} %')
+    plt.ylabel(f'PC2  {str(pca_variance_ratio_y)} %')
+    plt.scatter(xs, ys, color='blue')
+    plt.xlim(-1.1, 1.1)
+    plt.ylim(-1.1, 1.1)
+    plt.show()
 
 
 def plot_test():

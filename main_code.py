@@ -6,16 +6,16 @@ from sklearn.datasets import load_iris
 import pandas as pd
 
 
-def simulation_pca(x,y=None):
+def simulation_pca(data_title,x,y=None):
     # x, y = load_iris(return_X_y=True)
     normalize_data,mean_data,std_data= normalize.normalize_gaussian(data=x)
     pca_model,pca_vector,pca_variance,pca_variance_ratio,latent_data = (
         PCA_EJ.pca_train(data=normalize_data,n_components=3,))
-    PCA_plot.pca_plot_2D(
+    PCA_plot.pca_plot_3D_html(
         data=normalize_data,pca_vector=pca_vector,pca_variance_ratio=pca_variance_ratio,plot_samping=-1,labels=y)
-    PCA_plot.pca_plot_2D_color(
+    PCA_plot.pca_plot_3D_color_html(
         data=normalize_data,pca_vector=pca_vector,pca_variance_ratio=pca_variance_ratio,plot_samping=-1)
-
+    PCA_plot.pca_plot_2D_variable_vector(pca_vector=pca_vector,pca_variance_ratio=pca_variance_ratio,vector_name=data_title)
 def simulation_umap(x,y=None):
     # x, y = load_iris(return_X_y=True)
     normalize_data, mean_data, std_data = normalize.normalize_gaussian(data=x)
@@ -34,10 +34,13 @@ def main():
     # try:
     #     simulation_pca()
     # except Exception as e:
+
     #     error_callback.print_project_trace(e)
     # try:
     data=pd.read_excel(r'D:\Pycharm Project\2EH\data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
-    # interval_data=samping_method.interval_sampling(data=data,interval_count=5,start_index=1)
+
+    data_title = data.columns.tolist()[1:]
+    data_title = [s[6:] for s in data_title]
 
     interval_data1 = samping_method.time_sampling(
         data, interval_count=3600, start_time='2023-01-01', end_time='2023-05-10 ')
@@ -56,7 +59,7 @@ def main():
 
     normalize_data, mean_data, std_data = normalize.normalize_gaussian(data=interval_data_np)
 
-    simulation_pca(x=normalize_data)
+    simulation_pca(data_title,x=normalize_data)
     simulation_tsne(x=normalize_data)
     simulation_umap(x=normalize_data)
     print('end')
