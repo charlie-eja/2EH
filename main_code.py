@@ -10,25 +10,26 @@ def simulation_pca(data_title,x,y=None):
     # x, y = load_iris(return_X_y=True)
     normalize_data,mean_data,std_data= normalize.normalize_gaussian(data=x)
     pca_model,pca_vector,pca_variance,pca_variance_ratio,latent_data = (
-        PCA_EJ.pca_train(data=normalize_data,n_components=3,))
-    PCA_plot.pca_plot_3D_html(
+        PCA_EJ.pca_train(data=normalize_data,n_components=2,))
+    PCA_plot.pca_plot_2D_html(
         data=normalize_data,pca_vector=pca_vector,pca_variance_ratio=pca_variance_ratio,plot_samping=-1,labels=y)
-    PCA_plot.pca_plot_3D_color_html(
+    PCA_plot.pca_plot_2D_color_html(
         data=normalize_data,pca_vector=pca_vector,pca_variance_ratio=pca_variance_ratio,plot_samping=-1)
-    PCA_plot.pca_plot_2D_variable_vector(pca_vector=pca_vector,pca_variance_ratio=pca_variance_ratio,vector_name=data_title)
+    PCA_plot.pca_plot_2D_variable_vector_html(pca_vector=pca_vector,pca_variance_ratio=pca_variance_ratio,
+                                              vector_name=data_title)
 def simulation_umap(x,y=None):
     # x, y = load_iris(return_X_y=True)
     normalize_data, mean_data, std_data = normalize.normalize_gaussian(data=x)
-    umap_data=UMAP_EJ.umap_train(data=normalize_data,n_components=3,n_neighbors=15,random_state=42,)
-    UMPA_plot.umap_plot_3D(data=umap_data,labels=y,plot_samping=-1,)
-    UMPA_plot.umap_plot_3D_color(data=umap_data, plot_samping=-1, )
+    umap_data=UMAP_EJ.umap_train(data=normalize_data,n_components=2,n_neighbors=15,random_state=42,)
+    UMPA_plot.umap_plot_2D_html(data=umap_data,labels=y,plot_samping=-1,)
+    UMPA_plot.umap_plot_2D_color_html(data=umap_data, plot_samping=-1, )
 
 def simulation_tsne(x,y=None):
     # x, y = load_iris(return_X_y=True)
     normalize_data, mean_data, std_data = normalize.normalize_gaussian(data=x)
-    tSNE_EJ.tsne_train(data=normalize_data,n_components=3,perplexity=30,random_state=42,)
-    tSNE_plot.tsne_plot_3D(data=normalize_data,labels=y,plot_samping=-1,)
-    tSNE_plot.tsne_plot_3D_color(data=normalize_data,plot_samping=-1,)
+    tSNE_EJ.tsne_train(data=normalize_data,n_components=2,perplexity=30,random_state=42,)
+    tSNE_plot.tsne_plot_2D_html(data=normalize_data,labels=y,plot_samping=-1,)
+    tSNE_plot.tsne_plot_2D_color_html(data=normalize_data,plot_samping=-1,)
 
 def main():
     # try:
