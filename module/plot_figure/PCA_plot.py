@@ -148,6 +148,27 @@ def pca_plot_3D_color(data,pca_vector,pca_variance_ratio,plot_samping=-1,figure_
     plt.show()
     print('finished 3D plotting')
 
+
+def pca_plot_2D_variable_vector(pca_vector,pca_variance_ratio,ax=None, overlab=True):
+    if overlab:
+        if ax is None:
+            raise ValueError("overlab=True need figure information ")
+        target_ax = ax
+    else:
+        plt.figure(figsize=(6, 4))
+        target_ax = plt.gca()
+
+
+
+    x_line = np.linspace(-1, 1, 100)
+    target_ax.plot(x_line, x_line, linestyle='--', label='Extra Plot')
+
+    if not overlab:
+        target_ax.legend()
+        target_ax.grid(True)
+        plt.show()
+
+
 def plot_test():
     data = np.array([[1, 2, 3],
                   [4, 5, 6],

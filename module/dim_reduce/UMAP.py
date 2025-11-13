@@ -3,7 +3,7 @@ from sklearn.datasets import load_iris
 from module.Utilities import  normalize
 
 
-def  umap_mapping(data,n_neighbors=15,min_dist=0.1,n_components=2,metric="euclidean",random_state=42):
+def  umap_train(data,n_neighbors=15,min_dist=0.1,n_components=2,metric="euclidean",random_state=42):
     reducer = umap.UMAP(
         n_neighbors=n_neighbors,
         min_dist=min_dist,
@@ -16,7 +16,7 @@ def  umap_mapping(data,n_neighbors=15,min_dist=0.1,n_components=2,metric="euclid
 def umap_test():
     x, y = load_iris(return_X_y=True)
     normalize_data, mean_data, std_data =normalize.normalize_gaussian(x)
-    data_umap=umap_mapping(normalize_data)
+    data_umap=umap_train(normalize_data)
 
 
 

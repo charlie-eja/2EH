@@ -3,7 +3,7 @@ from sklearn.manifold import TSNE
 from sklearn.datasets import load_iris
 from module.Utilities import  normalize
 
-def  tsne_mapping(data,n_components=2,perplexity=30,learning_rate='auto',max_iter=1000,
+def  tsne_train(data,n_components=2,perplexity=30,learning_rate='auto',max_iter=1000,
         init='pca',metric='euclidean',random_state=42,verbose=1,):
     tsne = TSNE(
         n_components=n_components,
@@ -22,7 +22,7 @@ def  tsne_mapping(data,n_components=2,perplexity=30,learning_rate='auto',max_ite
 def tsne_test():
     x, y = load_iris(return_X_y=True)
     normalize_data, mean_data, std_data =normalize.normalize_gaussian(x)
-    data_tsne = tsne_mapping(normalize_data)
+    data_tsne = tsne_train(normalize_data)
 if __name__=='__main__':
     tsne_test()
 
