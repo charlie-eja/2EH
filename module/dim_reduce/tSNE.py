@@ -1,7 +1,7 @@
 from sklearn.preprocessing import StandardScaler
 from sklearn.manifold import TSNE
 from sklearn.datasets import load_iris
-from module.Utilities import  normalize
+from module.Utilities import  preprocessing
 
 def  tsne_train(data,n_components=2,perplexity=30,learning_rate='auto',max_iter=1000,
         init='pca',metric='euclidean',random_state=42,verbose=1,):
@@ -21,7 +21,7 @@ def  tsne_train(data,n_components=2,perplexity=30,learning_rate='auto',max_iter=
 
 def tsne_test():
     x, y = load_iris(return_X_y=True)
-    normalize_data, mean_data, std_data =normalize.normalize_gaussian(x)
+    normalize_data, mean_data, std_data =preprocessing.normalize_gaussian(x)
     data_tsne = tsne_train(normalize_data)
 if __name__=='__main__':
     tsne_test()

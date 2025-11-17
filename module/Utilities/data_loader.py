@@ -104,3 +104,34 @@ if __name__ == '__main__':
     train_dataset = classifier_data_loader(known_faults, faults, n_run=10, shuffle=False)
     val_dataset = classifier_data_loader(known_faults, faults, te=True, n_run=1, shuffle=False)
     print()
+
+
+
+import tensorflow as tf
+
+
+class DPAS_seq2seq(tf.keras.Model):
+    def __init__(self, n_predict_features, attr_en):
+        super().__init__()
+        self.attr_en = attr_en
+        self.enc = tf.keras.layers.LSTM(56, return_state=True)
+        self.dec = tf.keras.layers.LSTM(56, return_sequences=True)
+        self.td = tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(n_predict_features))
+
+    def call(self, inputs):
+        enc_input, dec_attr, dec_x = inputs
+
+        if self.attr_en:
+            dec_input = tf.keras.layers.Concatenate(axis=2)([dec_attr, dec_x])
+        else:
+            dec_input = dec_x
+
+        enc_out = self.enc(enc_input)
+        enc_stat = enc_out[1:]
+
+        dec_out = self.dec(dec_input, initial_state=enc_stat)
+        outputs = self.td(dec_out)
+
+        return outputs
+
+

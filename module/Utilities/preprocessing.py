@@ -2,8 +2,7 @@ import numpy as np
 import pandas as pd
 from fractions import Fraction
 
-
-def interval_sampling(data,start_index=0,end_index=-1,interval_count=1,time_index=None):
+def interval_sampling(data,start_index=0,end_index=-1,interval_count=1):
     '''interval sampling '''
     if interval_count==1:
         interval_data = data.iloc[start_index:end_index:int(interval_count)]
@@ -41,12 +40,12 @@ def expand_timeseries(data,factor,time_index='Time') -> pd.DataFrame:
                                   end=data.index.max(),
                                   freq=half_dt)
         data_new = data.reindex(data.index.union(new_index))
-        data_new = data_new.interpolate(method='time')
+        data_new = data_new.interpolate(method='time', limit_area="inside")
         data_new = data_new.loc[new_index]
         data_new = data_new.reset_index().rename(columns={'index': time_index})
     return data_new
 
-def time_sampling(data,start_time=None,end_time=None,interval_count=None,time_index='Time'):
+def time_sampling(data,start_time=None,end_time=None,interval_count=None,time_index='Time',time_low=True):
     ''' time samping '''
     excel_time = pd.to_datetime(data[time_index], errors='coerce')
     if start_time is None:
@@ -77,9 +76,11 @@ def time_sampling(data,start_time=None,end_time=None,interval_count=None,time_in
         time_ratio=interval_count/int(interval_time)
 
     interval_data=interval_sampling(data, start_index=start_index, end_index= end_index, interval_count=time_ratio)
+    if time_low:
+        interval_data=interval_data.iloc[:, 1:].to_numpy(dtype=float)
+    else:
+        interval_data=interval_data.iloc.to_numpy(dtype=float)
     return interval_data
-
-
 
 def detect_time_interval(series: pd.Series) -> str:
     """
@@ -100,10 +101,76 @@ def detect_time_interval(series: pd.Series) -> str:
         nearest_minute = round(interval / 60)
         return f"{nearest_minute*60}s"
 
+def normalize_gaussian(data):
+    # default input data  PD or list or numpy   (sample * variables)
+    data_np = np.array(data)
+    mean_data = np.mean(data_np, axis=0)
+    std_data = np.std(data_np, axis=0)
+    std_data[std_data==0]=0.01
+    normalize_data = (data_np - mean_data) /std_data
+    return normalize_data,mean_data,std_data
 
+def mult_interval_sampling():
+    print('not yet ')
+
+def mult_time_sampling(data,start_time_list,end_time_list,interval_count=None,time_index='Time',time_low=True):
+    if len(start_time_list)==len(end_time_list):
+        # interval_data=np.vstack([
+        #     time_sampling(
+        #         data,
+        #         start_time=start_time,
+        #         end_time=end_time,
+        #         interval_count=interval_count,
+        #         time_index=time_index,
+        #         time_low=time_low,
+        #     )
+        #     for start_time, end_time in zip(start_time_list, end_time_list)])
+        interval_list=[
+            time_sampling(
+                data,
+                start_time=start_time,
+                end_time=end_time,
+                interval_count=interval_count,
+                time_index=time_index,
+                time_low=time_low,
+            )
+            for start_time, end_time in zip(start_time_list, end_time_list)]
+        data_lengths = [arr.shape[0] for arr in interval_list]
+        interval_data = np.vstack(interval_list)
+        return interval_data,data_lengths
+    else:
+        print('start_time_list length should be equal to end_time_list length')
+
+def sort_3D_data(data,intput_index,out_put_index,input_time_step,output_time_step,data_lengths=None,):
+    print('not yet ')
+
+def merge_with_gap(rows, max_gap=1):
+    rows = sorted(rows)
+    if not rows: return []
+    ranges = []
+    start = prev = rows[0]
+    for r in rows[1:]:
+        gap = r - prev - 1
+        if gap <= max_gap:
+            prev = r
+        else:
+            ranges.append((start, prev))
+            start = prev = r
+    ranges.append((start, prev))
+    return ranges
+
+def find_nan_data(data,time_index='Time',max_gap=1):
+    bad_positions = {}  # {col : [bad_row_index,...]}
+    for i, row in data.iterrows():
+        for col, val in row.items():
+            if col != time_index:
+                if not isinstance(val, float):
+                    bad_positions.setdefault(col, []).append(i)
+                    data.at[i, col] = 0.0
+    for col, rows in bad_positions.items():
+        for s, e in merge_with_gap(rows, max_gap):
+            print(f"{s}~{e} row, col {col} has problems")
+    return data
 
 if __name__ == '__main__':
     data=pd.read_excel(r'D:\Pycharm Project\2EH\data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
-    # interval_data=interval_sampling(data,interval_count=2.0)
-    interval_data=time_sampling(data,interval_count=1800,start_time='2023-01-02 ',end_time='2023-01-03 22:00:00 ')
-    print('end')
