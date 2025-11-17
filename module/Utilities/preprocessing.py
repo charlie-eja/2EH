@@ -141,8 +141,16 @@ def mult_time_sampling(data,start_time_list,end_time_list,interval_count=None,ti
     else:
         print('start_time_list length should be equal to end_time_list length')
 
-def sort_3D_data(data,intput_index,out_put_index,input_time_step,output_time_step,data_lengths=None,):
-    print('not yet ')
+def sort_3D_data(data,intput_index=[0,1],out_put_index=[2,3],input_time_step=5,output_time_step=6,jump_step=1):
+    data_x = data[:,intput_index]
+    _, x_dimension = data_x.shape
+    data_y = data[input_time_step:,out_put_index]
+    _, y_dimension = data_y.shape
+    all_x = np.lib.stride_tricks.sliding_window_view(data_x, (input_time_step, x_dimension)).squeeze(axis=1)
+    all_y = np.lib.stride_tricks.sliding_window_view(data_y, (output_time_step, y_dimension)).squeeze(axis=1)
+    data_x_3D = all_x[:len(all_y):jump_step]
+    data_y_3D = all_y[::jump_step]
+    return data_x_3D,data_y_3D
 
 def merge_with_gap(rows, max_gap=1):
     rows = sorted(rows)

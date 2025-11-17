@@ -44,7 +44,6 @@ def main():
         start_time_list=['2023-01-01','2023-05-20','2023-08-13']
         end_time_list  =['2023-05-10','2023-07-22','2023-12-01']
 
-
         interval_data ,data_lengths= preprocessing.mult_time_sampling(
             data,
             start_time_list,
@@ -54,9 +53,14 @@ def main():
             time_low=True)
         normalize_data, mean_data, std_data = preprocessing.normalize_gaussian(data=interval_data)
 
-        simulation_pca(data_title,x=normalize_data)
-        simulation_tsne(x=normalize_data)
-        simulation_umap(x=normalize_data)
+
+        preprocessing.sort_3D_data(normalize_data)
+
+
+
+        # simulation_pca(data_title,x=normalize_data)
+        # simulation_tsne(x=normalize_data)
+        # simulation_umap(x=normalize_data)
         print('end')
     # except Exception as e:
     #     error_callback.print_project_trace(e)
