@@ -18,6 +18,7 @@ def  umap_train(data : np.ndarray,
     )
     data_umap = reducer.fit_transform(data)
     return data_umap
+
 def umap_test():
     x, y = load_iris(return_X_y=True)
     normalize_data, mean_data, std_data =preprocessing.normalize_gaussian(x)
