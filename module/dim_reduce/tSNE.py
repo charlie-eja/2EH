@@ -2,9 +2,17 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.manifold import TSNE
 from sklearn.datasets import load_iris
 from module.Utilities import  preprocessing
+import numpy as np
 
-def  tsne_train(data,n_components=2,perplexity=30,learning_rate='auto',max_iter=1000,
-        init='pca',metric='euclidean',random_state=42,verbose=1,):
+def  tsne_train(data : np.ndarray,
+                n_components : int =2,
+                perplexity : int =30,
+                learning_rate : str ='auto',
+                max_iter : int =1000,
+                init : str ='pca',
+                metric : str ='euclidean',
+                random_state : int =42,
+                verbose : int =1,) ->np.ndarray:
     tsne = TSNE(
         n_components=n_components,
         perplexity=perplexity,

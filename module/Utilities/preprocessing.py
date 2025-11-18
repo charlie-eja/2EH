@@ -1,8 +1,13 @@
 import numpy as np
 import pandas as pd
 from fractions import Fraction
+from itertools import accumulate
+from typing import Tuple
 
-def interval_sampling(data,start_index=0,end_index=-1,interval_count=1):
+def interval_sampling(data : pd.DataFrame,
+                      start_index : str =0,
+                      end_index : str =-1,
+                      interval_count : str=1) -> pd.DataFrame:
     '''interval sampling '''
     if interval_count==1:
         interval_data = data.iloc[start_index:end_index:int(interval_count)]
@@ -19,7 +24,9 @@ def interval_sampling(data,start_index=0,end_index=-1,interval_count=1):
         interval_data = expand_data.iloc[start_index:end_index:numerator]
     return interval_data
 
-def expand_timeseries(data,factor,time_index='Time') -> pd.DataFrame:
+def expand_timeseries(data : pd.DataFrame,
+                      factor : int,
+                      time_index : str ='Time') -> pd.DataFrame:
     '''expand data and time  '''
     if time_index is None:
         data = data.reset_index(drop=True)
@@ -45,7 +52,12 @@ def expand_timeseries(data,factor,time_index='Time') -> pd.DataFrame:
         data_new = data_new.reset_index().rename(columns={'index': time_index})
     return data_new
 
-def time_sampling(data,start_time=None,end_time=None,interval_count=None,time_index='Time',time_low=True):
+def time_sampling(data : pd.DataFrame,
+                  start_time : str =None,
+                  end_time : str =None,
+                  interval_count : int =None,
+                  time_index : str ='Time',
+                  time_low=True) -> np.ndarray:
     ''' time samping '''
     excel_time = pd.to_datetime(data[time_index], errors='coerce')
     if start_time is None:
@@ -82,7 +94,7 @@ def time_sampling(data,start_time=None,end_time=None,interval_count=None,time_in
         interval_data=interval_data.iloc.to_numpy(dtype=float)
     return interval_data
 
-def detect_time_interval(series: pd.Series) -> str:
+def detect_time_interval(series: pd.Series) -> Tuple[str]:
     """
     Automatically determine the closest interval level based on the time series.
     < 60 seconds: round to the nearest seconds
@@ -101,7 +113,7 @@ def detect_time_interval(series: pd.Series) -> str:
         nearest_minute = round(interval / 60)
         return f"{nearest_minute*60}s"
 
-def normalize_gaussian(data):
+def normalize_gaussian(data : np.ndarray) -> Tuple[np.ndarray,np.ndarray,np.ndarray]:
     # default input data  PD or list or numpy   (sample * variables)
     data_np = np.array(data)
     mean_data = np.mean(data_np, axis=0)
@@ -110,21 +122,16 @@ def normalize_gaussian(data):
     normalize_data = (data_np - mean_data) /std_data
     return normalize_data,mean_data,std_data
 
-def mult_interval_sampling():
+def multi_interval_sampling():
     print('not yet ')
 
-def mult_time_sampling(data,start_time_list,end_time_list,interval_count=None,time_index='Time',time_low=True):
+def multi_time_sampling(data : pd.DataFrame,
+                        start_time_list : list,
+                        end_time_list : list,
+                        interval_count : int =None,
+                        time_index :str ='Time',
+                        time_low=True)  ->  Tuple[np.ndarray,list]:
     if len(start_time_list)==len(end_time_list):
-        # interval_data=np.vstack([
-        #     time_sampling(
-        #         data,
-        #         start_time=start_time,
-        #         end_time=end_time,
-        #         interval_count=interval_count,
-        #         time_index=time_index,
-        #         time_low=time_low,
-        #     )
-        #     for start_time, end_time in zip(start_time_list, end_time_list)])
         interval_list=[
             time_sampling(
                 data,
@@ -136,12 +143,18 @@ def mult_time_sampling(data,start_time_list,end_time_list,interval_count=None,ti
             )
             for start_time, end_time in zip(start_time_list, end_time_list)]
         data_lengths = [arr.shape[0] for arr in interval_list]
+        data_lengths.insert(0, 0)
         interval_data = np.vstack(interval_list)
         return interval_data,data_lengths
     else:
         print('start_time_list length should be equal to end_time_list length')
 
-def sort_3D_data(data,intput_index=[0,1],out_put_index=[2,3],input_time_step=5,output_time_step=6,jump_step=1):
+def sort_3D_data(data : np.ndarray,
+                 intput_index : list =[0,1],
+                 out_put_index : list =[2,3],
+                 input_time_step : int=5,
+                 output_time_step : int=6,
+                 jump_step : int=1)  ->  Tuple[np.ndarray,np.ndarray]:
     data_x = data[:,intput_index]
     _, x_dimension = data_x.shape
     data_y = data[input_time_step:,out_put_index]
@@ -152,7 +165,34 @@ def sort_3D_data(data,intput_index=[0,1],out_put_index=[2,3],input_time_step=5,o
     data_y_3D = all_y[::jump_step]
     return data_x_3D,data_y_3D
 
-def merge_with_gap(rows, max_gap=1):
+def multi_sort_3D_data(data : np.ndarray,
+                       intput_index : list =[0,1],
+                       out_put_index : list =[2,3],
+                       input_time_step : int=5,
+                       output_time_step : int=6,
+                       jump_step : int=1,
+                       data_lengths : list=[0,-1]) ->  Tuple[np.ndarray,np.ndarray]:
+    data_lengths = list(accumulate(data_lengths))
+    all_x = []
+    all_y = []
+    for start, end in zip(data_lengths, data_lengths[1:]):
+        small_data = data[start:end]
+        data_x_3D,data_y_3D = sort_3D_data(small_data,
+                                           intput_index=intput_index,
+                                           out_put_index=out_put_index,
+                                           input_time_step=input_time_step,
+                                           output_time_step=output_time_step,
+                                           jump_step=jump_step)
+        all_x.append(data_x_3D)
+        all_y.append(data_y_3D)
+
+    all_x = np.concatenate(all_x, axis=0)
+    all_y = np.concatenate(all_y, axis=0)
+
+    return all_x,all_y
+
+def merge_with_gap(rows : list,
+                   max_gap : int =1) ->  Tuple[list]:
     rows = sorted(rows)
     if not rows: return []
     ranges = []
@@ -167,7 +207,9 @@ def merge_with_gap(rows, max_gap=1):
     ranges.append((start, prev))
     return ranges
 
-def find_nan_data(data,time_index='Time',max_gap=1):
+def find_nan_data(data : pd.DataFrame,
+                  time_index : str ='Time',
+                  max_gap : int =1) -> Tuple[pd.DataFrame]:
     bad_positions = {}  # {col : [bad_row_index,...]}
     for i, row in data.iterrows():
         for col, val in row.items():

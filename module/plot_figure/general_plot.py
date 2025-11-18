@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def general_plot_2D(data,labels=None,plot_samping=-1):
+def general_plot_2D(data : np.ndarray,labels : np.ndarray=None,plot_samping : int =-1):
     plt.figure(figsize=(6, 5))
     plt.scatter(data[:, 0], data[:, 1], c=labels)
 
@@ -16,7 +16,7 @@ def general_plot_2D(data,labels=None,plot_samping=-1):
     plt.savefig('general.png', dpi=150)
     plt.show()
 
-def general_plot_2D_color(data,plot_samping=-1):
+def general_plot_2D_color(data : np.ndarray,plot_samping : int =-1):
     plt.figure(figsize=(6, 5))
     order_colors = np.arange(len(data))
     sc = plt.scatter(data[:, 0], data[:, 1], c=order_colors, cmap='viridis')
@@ -35,7 +35,7 @@ def general_plot_2D_color(data,plot_samping=-1):
     plt.savefig('general_plot_colored.png', dpi=150)
     plt.show()
 
-def general_plot_3D(data,labels=None,plot_samping=-1):
+def general_plot_3D(data : np.ndarray,labels : np.ndarray=None,plot_samping : int =-1):
     fig = plt.figure(figsize=(6, 5))
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(data[:, 0], data[:, 1], data[:, 2], c=labels,)
@@ -52,7 +52,7 @@ def general_plot_3D(data,labels=None,plot_samping=-1):
     plt.savefig('general_plot_3D.png', dpi=150)
     plt.show()
 
-def general_plot_3D_color(data,plot_samping=-1):
+def general_plot_3D_color(data : np.ndarray,plot_samping : int =-1):
     fig = plt.figure(figsize=(8, 6))
     ax = fig.add_subplot(111, projection='3d')
     order_colors = np.arange(len(data))
@@ -73,3 +73,4 @@ def general_plot_3D_color(data,plot_samping=-1):
     plt.tight_layout()
     plt.savefig('general_plot_3d_colored.png', dpi=150)
     plt.show()
+

@@ -1,6 +1,9 @@
 from sklearn.decomposition import PCA
 import numpy as np
-def pca_train(data,n_components=2):
+from typing import Tuple
+
+def pca_train(data : np.ndarray,
+              n_components : int =2) -> Tuple[None,np.ndarray, np.ndarray,np.ndarray, np.ndarray]:
     pca = PCA(n_components=n_components)
     pca_model=pca.fit(data)
     pca_vector=pca_model.components_.T

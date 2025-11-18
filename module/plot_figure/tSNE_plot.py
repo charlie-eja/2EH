@@ -2,7 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import plotly.graph_objects as go
 
-def tsne_plot_2D(data,labels=None,plot_samping=-1,figure_name='t-SNE_plot'):
+def tsne_plot_2D(data : np.ndarray,
+                 labels : np.ndarray=None,
+                 plot_samping : int =-1,
+                 figure_name : str ='t-SNE_plot'):
     plt.figure(figsize=(6, 5))
     plt.scatter(data[:, 0], data[:, 1], c=labels)
     for i in range(0,len(data),plot_samping):
@@ -15,7 +18,10 @@ def tsne_plot_2D(data,labels=None,plot_samping=-1,figure_name='t-SNE_plot'):
     plt.savefig(figure_name+'.png', dpi=150)
     plt.show()
 
-def tsne_plot_2D_html(data,labels=None,plot_samping=-1,figure_name='t-SNE_plot'):
+def tsne_plot_2D_html(data : np.ndarray,
+                      labels : np.ndarray=None,
+                      plot_samping : int =-1,
+                      figure_name : str ='t-SNE_plot'):
     fig = go.Figure()
 
     fig.add_trace(go.Scatter(
@@ -54,7 +60,9 @@ def tsne_plot_2D_html(data,labels=None,plot_samping=-1,figure_name='t-SNE_plot')
 
     print('finished plotting, saved', html_name)
 
-def tsne_plot_2D_color(data,plot_samping=-1,figure_name='t-SNE_plot_colored'):
+def tsne_plot_2D_color(data : np.ndarray,
+                       plot_samping : int =-1,
+                       figure_name : str ='t-SNE_plot_colored'):
     plt.figure(figsize=(6, 5))
     order_colors = np.arange(len(data))
     sc = plt.scatter(data[:, 0], data[:, 1], c=order_colors, cmap='viridis')
@@ -75,7 +83,9 @@ def tsne_plot_2D_color(data,plot_samping=-1,figure_name='t-SNE_plot_colored'):
 
     print('finished t-SNE plotting')
 
-def tsne_plot_2D_color_html(data,plot_samping=-1,figure_name='t-SNE_plot_colored'):
+def tsne_plot_2D_color_html(data : np.ndarray,
+                            plot_samping : int =-1,
+                            figure_name : str ='t-SNE_plot_colored'):
 
     order_colors = np.arange(len(data))
 
@@ -117,7 +127,10 @@ def tsne_plot_2D_color_html(data,plot_samping=-1,figure_name='t-SNE_plot_colored
 
     print('finished t-SNE plotting, saved', html_name)
 
-def tsne_plot_3D(data,labels=None,plot_samping=-1,figure_name='t-SNE_plot_3D'):
+def tsne_plot_3D(data : np.ndarray,
+                 labels : np.ndarray=None,
+                 plot_samping : int =-1,
+                 figure_name : str ='t-SNE_plot_3D'):
     fig = plt.figure(figsize=(6, 5))
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(data[:, 0], data[:, 1], data[:, 2], c=labels)
@@ -134,7 +147,10 @@ def tsne_plot_3D(data,labels=None,plot_samping=-1,figure_name='t-SNE_plot_3D'):
     plt.savefig(figure_name+'.png', dpi=150)
     plt.show()
 
-def tsne_plot_3D_html(data,labels=None,plot_samping=-1,figure_name='t-SNE_plot_3D'):
+def tsne_plot_3D_html(data : np.ndarray,
+                      labels : np.ndarray=None,
+                      plot_samping : int =-1,
+                      figure_name : str ='t-SNE_plot_3D'):
     fig = go.Figure()
 
     fig.add_trace(go.Scatter3d(
@@ -178,7 +194,9 @@ def tsne_plot_3D_html(data,labels=None,plot_samping=-1,figure_name='t-SNE_plot_3
 
     print('finished t-SNE 3D plotting, saved', html_name)
 
-def tsne_plot_3D_color(data,plot_samping=-1,figure_name='t-SNE_plot_3D_colored'):
+def tsne_plot_3D_color(data : np.ndarray,
+                       plot_samping : int =-1,
+                       figure_name : str ='t-SNE_plot_3D_colored'):
     fig = plt.figure(figsize=(8, 6))
     ax = fig.add_subplot(111, projection='3d')
     order_colors = np.arange(len(data))
@@ -200,7 +218,9 @@ def tsne_plot_3D_color(data,plot_samping=-1,figure_name='t-SNE_plot_3D_colored')
     plt.savefig(figure_name+'.png', dpi=150)
     plt.show()
 
-def tsne_plot_3D_color_html(data,plot_samping=-1,figure_name='t-SNE_plot_3D_colored'):
+def tsne_plot_3D_color_html(data : np.ndarray,
+                            plot_samping : int =-1,
+                            figure_name : str ='t-SNE_plot_3D_colored'):
 
     order_colors = np.arange(len(data))
 

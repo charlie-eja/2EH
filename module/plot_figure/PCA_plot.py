@@ -2,7 +2,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import plotly.graph_objects as go
 
-def pca_plot_2D(data,pca_vector,pca_variance_ratio,labels=None,plot_samping=-1,figure_name='pca_plot'):
+def pca_plot_2D(data : np.ndarray,
+                pca_vector : np.ndarray,
+                pca_variance_ratio : np.ndarray,
+                labels : np.ndarray=None,
+                plot_samping : int =-1,
+                figure_name : str ='pca_plot'):
 
     latent_data = np.matmul(data, pca_vector)
     x = latent_data[:,0]
@@ -35,7 +40,12 @@ def pca_plot_2D(data,pca_vector,pca_variance_ratio,labels=None,plot_samping=-1,f
     plt.show()
     print('finished plotting')
 
-def pca_plot_2D_html(data,pca_vector,pca_variance_ratio,labels=None,plot_samping=-1,figure_name='pca_plot'):
+def pca_plot_2D_html(data : np.ndarray,
+                     pca_vector : np.ndarray,
+                     pca_variance_ratio : np.ndarray,
+                     labels : np.ndarray=None,
+                     plot_samping : int =-1,
+                     figure_name : str ='pca_plot'):
     latent_data = np.matmul(data, pca_vector)
     x = latent_data[:, 0]
     y = latent_data[:, 1]
@@ -100,7 +110,12 @@ def pca_plot_2D_html(data,pca_vector,pca_variance_ratio,labels=None,plot_samping
     print('finished plotting, saved', html_name)
 
 
-def pca_plot_3D(data,pca_vector,pca_variance_ratio,labels=None,plot_samping=-1,figure_name='pca_plot_3D'):
+def pca_plot_3D(data : np.ndarray,
+                pca_vector : np.ndarray,
+                pca_variance_ratio : np.ndarray,
+                labels : np.ndarray=None,
+                plot_samping : int =-1,
+                figure_name : str ='pca_plot_3D'):
 
     latent_data = np.matmul(data, pca_vector)  # (N x 3)
     x = latent_data[:, 0]
@@ -139,7 +154,12 @@ def pca_plot_3D(data,pca_vector,pca_variance_ratio,labels=None,plot_samping=-1,f
     plt.show()
     print('finished 3D plotting')
 
-def pca_plot_3D_html(data,pca_vector,pca_variance_ratio,labels=None,plot_samping=-1,figure_name='pca_plot_3D'):
+def pca_plot_3D_html(data : np.ndarray,
+                     pca_vector : np.ndarray,
+                     pca_variance_ratio : np.ndarray,
+                     labels : np.ndarray=None,
+                     plot_samping : int =-1,
+                     figure_name : str ='pca_plot_3D'):
 
     latent_data = np.matmul(data, pca_vector)  # (N x 3)
     x = latent_data[:, 0]
@@ -212,7 +232,11 @@ def pca_plot_3D_html(data,pca_vector,pca_variance_ratio,labels=None,plot_samping
     print('finished 3D plotting, saved as', html_name)
 
 
-def pca_plot_2D_color(data,pca_vector,pca_variance_ratio,plot_samping=-1,figure_name='pca_plot_colored'):
+def pca_plot_2D_color(data : np.ndarray,
+                      pca_vector : np.ndarray,
+                      pca_variance_ratio : np.ndarray,
+                      plot_samping : int =-1,
+                      figure_name : str ='pca_plot_colored'):
 
     latent_data = np.matmul(data, pca_vector)
     x = latent_data[:, 0]
@@ -247,7 +271,11 @@ def pca_plot_2D_color(data,pca_vector,pca_variance_ratio,plot_samping=-1,figure_
     print('finished plotting')
 
 
-def pca_plot_2D_color_html(data,pca_vector,pca_variance_ratio,plot_samping=-1,figure_name='pca_plot_colored'):
+def pca_plot_2D_color_html(data : np.ndarray,
+                           pca_vector : np.ndarray,
+                           pca_variance_ratio : np.ndarray,
+                           plot_samping : int =-1,
+                           figure_name : str ='pca_plot_colored'):
     latent_data = np.matmul(data, pca_vector)
     x = latent_data[:, 0]
     y = latent_data[:, 1]
@@ -314,7 +342,11 @@ def pca_plot_2D_color_html(data,pca_vector,pca_variance_ratio,plot_samping=-1,fi
     print('finished plotting, saved', html_name)
 
 
-def pca_plot_3D_color(data,pca_vector,pca_variance_ratio,plot_samping=-1,figure_name='pca_plot_3D_colored'):
+def pca_plot_3D_color(data : np.ndarray,
+                      pca_vector : np.ndarray,
+                      pca_variance_ratio : np.ndarray,
+                      plot_samping : int =-1,
+                      figure_name : str ='pca_plot_3D_colored'):
 
     latent_data = np.matmul(data, pca_vector)  # (N x 3)
     x = latent_data[:, 0]
@@ -355,7 +387,11 @@ def pca_plot_3D_color(data,pca_vector,pca_variance_ratio,plot_samping=-1,figure_
     plt.show()
     print('finished 3D plotting')
 
-def pca_plot_3D_color_html(data,pca_vector,pca_variance_ratio,plot_samping=-1,figure_name='pca_plot_3D_colored'):
+def pca_plot_3D_color_html(data : np.ndarray,
+                           pca_vector : np.ndarray,
+                           pca_variance_ratio : np.ndarray,
+                           plot_samping : int =-1,
+                           figure_name : str ='pca_plot_3D_colored'):
 
     latent_data = np.matmul(data, pca_vector)
     x = latent_data[:, 0]
@@ -421,7 +457,9 @@ def pca_plot_3D_color_html(data,pca_vector,pca_variance_ratio,plot_samping=-1,fi
     fig.write_html(html_name)
     print('finished 3D plotting, saved as', html_name)
 
-def pca_plot_2D_variable_vector(pca_vector,pca_variance_ratio,vector_name):
+def pca_plot_2D_variable_vector(pca_vector : np.ndarray,
+                                pca_variance_ratio : np.ndarray,
+                                vector_name : list):
     pca_variance_ratio_x = np.round(pca_variance_ratio[0], 2)
     pca_variance_ratio_y = np.round(pca_variance_ratio[1], 2)
 
@@ -440,7 +478,10 @@ def pca_plot_2D_variable_vector(pca_vector,pca_variance_ratio,vector_name):
     plt.ylim(-1.1, 1.1)
     plt.show()
 
-def pca_plot_2D_variable_vector_html(pca_vector,pca_variance_ratio,vector_name,figure_name='pca_plot_vector'):
+def pca_plot_2D_variable_vector_html(pca_vector : np.ndarray,
+                                     pca_variance_ratio : np.ndarray,
+                                     vector_name : list,
+                                     figure_name : str ='pca_plot_vector'):
     pca_variance_ratio_x = np.round(pca_variance_ratio[0], 2)
     pca_variance_ratio_y = np.round(pca_variance_ratio[1], 2)
 
@@ -484,7 +525,10 @@ def pca_plot_2D_variable_vector_html(pca_vector,pca_variance_ratio,vector_name,f
     print('saved', html_name)
 
 
-def pca_plot_3D_variable_vector_html(pca_vector,pca_variance_ratio,vector_name,figure_name='pca_plot_3D_vector'):
+def pca_plot_3D_variable_vector_html(pca_vector : np.ndarray,
+                                     pca_variance_ratio : np.ndarray,
+                                     vector_name : list,
+                                     figure_name : str ='pca_plot_3D_vector'):
     pca_variance_ratio_x = np.round(pca_variance_ratio[0], 2)
     pca_variance_ratio_y = np.round(pca_variance_ratio[1], 2)
     pca_variance_ratio_z = np.round(pca_variance_ratio[2], 2)

@@ -2,7 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import plotly.graph_objects as go
 
-def umap_plot_2D(data,labels=None,plot_samping=-1,figure_name='umap_plot'):
+def umap_plot_2D(data : np.ndarray,
+                 labels : np.ndarray=None,
+                 plot_samping : int =-1,
+                 figure_name : str ='umap_plot'):
     plt.figure(figsize=(6, 5))
     plt.scatter(data[:, 0], data[:, 1], c=labels)
 
@@ -17,7 +20,10 @@ def umap_plot_2D(data,labels=None,plot_samping=-1,figure_name='umap_plot'):
     plt.savefig(figure_name+'.png', dpi=150)
     plt.show()
 
-def umap_plot_2D_html(data,labels=None,plot_samping=-1,figure_name='umap_plot'):
+def umap_plot_2D_html(data : np.ndarray,
+                      labels : np.ndarray=None,
+                      plot_samping : int =-1,
+                      figure_name : str ='umap_plot'):
     fig = go.Figure()
 
     fig.add_trace(go.Scatter(
@@ -57,7 +63,9 @@ def umap_plot_2D_html(data,labels=None,plot_samping=-1,figure_name='umap_plot'):
     print('finished plotting, saved', html_name)
 
 
-def umap_plot_2D_color(data,plot_samping=-1,figure_name='umap_plot_colored'):
+def umap_plot_2D_color(data : np.ndarray,
+                       plot_samping : int =-1,
+                       figure_name : str ='umap_plot_colored'):
     plt.figure(figsize=(6, 5))
     order_colors = np.arange(len(data))
     sc = plt.scatter(data[:, 0], data[:, 1], c=order_colors, cmap='viridis')
@@ -77,7 +85,9 @@ def umap_plot_2D_color(data,plot_samping=-1,figure_name='umap_plot_colored'):
     plt.show()
     print('finished UMAP plotting')
 
-def umap_plot_2D_color_html(data,plot_samping=-1,figure_name='umap_plot_colored'):
+def umap_plot_2D_color_html(data : np.ndarray,
+                            plot_samping : int =-1,
+                            figure_name : str ='umap_plot_colored'):
 
     order_colors = np.arange(len(data))
 
@@ -119,7 +129,10 @@ def umap_plot_2D_color_html(data,plot_samping=-1,figure_name='umap_plot_colored'
 
     print('finished UMAP plotting, saved', html_name)
 
-def umap_plot_3D(data,labels=None,plot_samping=-1,figure_name='umap_plot_3D'):
+def umap_plot_3D(data : np.ndarray,
+                 labels=None,
+                 plot_samping : int =-1,
+                 figure_name : str ='umap_plot_3D'):
     fig = plt.figure(figsize=(6, 5))
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(data[:, 0], data[:, 1], data[:, 2], c=labels,)
@@ -136,7 +149,10 @@ def umap_plot_3D(data,labels=None,plot_samping=-1,figure_name='umap_plot_3D'):
     plt.savefig(figure_name+'.png', dpi=150)
     plt.show()
 
-def umap_plot_3D_html(data,labels=None,plot_samping=-1,figure_name='umap_plot_plot_3D'):
+def umap_plot_3D_html(data : np.ndarray,
+                      labels=None,
+                      plot_samping : int =-1,
+                      figure_name : str ='umap_plot_plot_3D'):
     fig = go.Figure()
 
     fig.add_trace(go.Scatter3d(
@@ -180,9 +196,9 @@ def umap_plot_3D_html(data,labels=None,plot_samping=-1,figure_name='umap_plot_pl
 
     print('finished UMAP 3D plotting, saved', html_name)
 
-
-
-def umap_plot_3D_color(data,plot_samping=-1,figure_name='umap_plot_3D_colored'):
+def umap_plot_3D_color(data : np.ndarray,
+                       plot_samping : int =-1,
+                       figure_name : str ='umap_plot_3D_colored'):
     fig = plt.figure(figsize=(8, 6))
     ax = fig.add_subplot(111, projection='3d')
     order_colors = np.arange(len(data))
@@ -205,7 +221,9 @@ def umap_plot_3D_color(data,plot_samping=-1,figure_name='umap_plot_3D_colored'):
     plt.show()
     print('finished UMAP 3D plotting')
 
-def umap_plot_3D_color_html(data,plot_samping=-1,figure_name='umap_plot_plot_3D_colored'):
+def umap_plot_3D_color_html(data : np.ndarray,
+                            plot_samping : int =-1,
+                            figure_name : str ='umap_plot_plot_3D_colored'):
 
     order_colors = np.arange(len(data))
 

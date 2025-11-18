@@ -1,9 +1,14 @@
 import umap
 from sklearn.datasets import load_iris
 from module.Utilities import  preprocessing
+import numpy as np
 
-
-def  umap_train(data,n_neighbors=15,min_dist=0.1,n_components=2,metric="euclidean",random_state=42):
+def  umap_train(data : np.ndarray,
+                n_neighbors :int =15,
+                min_dist :int =0.1,
+                n_components :int =2,
+                metric : str ="euclidean",
+                random_state :int =42) -> np.ndarray:
     reducer = umap.UMAP(
         n_neighbors=n_neighbors,
         min_dist=min_dist,
