@@ -27,7 +27,6 @@ def simulation_umap(x,y=None):
     umap_data=UMAP_EJ.umap_train(data=normalize_data,n_components=2,n_neighbors=15,random_state=42,)
     UMPA_plot.umap_plot_2D_html(data=umap_data,labels=y,plot_samping=-1,)
     UMPA_plot.umap_plot_2D_color_html(data=umap_data, plot_samping=-1, )
-
 def simulation_tsne(x,y=None):
     # x, y = load_iris(return_X_y=True)
     normalize_data, mean_data, std_data = preprocessing.normalize_gaussian(data=x)
