@@ -59,7 +59,7 @@ def main():
                                                      data_lengths=data_lengths,
                                                      jump_step=2,)
 
-        simulation_pca(data_title,x=normalize_data)
+        # simulation_pca(data_title,x=normalize_data)
         # simulation_tsne(x=normalize_data)
         # simulation_umap(x=normalize_data)
 
