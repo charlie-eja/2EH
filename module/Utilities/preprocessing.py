@@ -5,9 +5,9 @@ from itertools import accumulate
 from typing import Tuple
 
 def interval_sampling(data : pd.DataFrame,
-                      start_index : str =0,
-                      end_index : str =-1,
-                      interval_count : str=1) -> pd.DataFrame:
+                      start_index : int =0,
+                      end_index : int =-1,
+                      interval_count : int=1) -> pd.DataFrame:
     '''interval sampling '''
     if interval_count==1:
         interval_data = data.iloc[start_index:end_index:int(interval_count)]
@@ -56,8 +56,7 @@ def time_sampling(data : pd.DataFrame,
                   start_time : str =None,
                   end_time : str =None,
                   interval_count : int =None,
-                  time_index : str ='Time',
-                  time_low=True) -> np.ndarray:
+                  time_index : str ='Time',) -> np.ndarray:
     ''' time samping '''
     excel_time = pd.to_datetime(data[time_index], errors='coerce')
     if start_time is None:
@@ -88,13 +87,11 @@ def time_sampling(data : pd.DataFrame,
         time_ratio=interval_count/int(interval_time)
 
     interval_data=interval_sampling(data, start_index=start_index, end_index= end_index, interval_count=time_ratio)
-    if time_low:
-        interval_data=interval_data.iloc[:, 1:].to_numpy(dtype=float)
-    else:
-        interval_data=interval_data.iloc.to_numpy(dtype=float)
+    interval_data=interval_data.iloc[:, 1:].to_numpy(dtype=float)
+
     return interval_data
 
-def detect_time_interval(series: pd.Series) -> Tuple[str]:
+def detect_time_interval(series: pd.Series) -> str:
     """
     Automatically determine the closest interval level based on the time series.
     < 60 seconds: round to the nearest seconds
@@ -218,9 +215,12 @@ def find_nan_data(data : pd.DataFrame,
                     bad_positions.setdefault(col, []).append(i)
                     data.at[i, col] = 0.0
     for col, rows in bad_positions.items():
-        print(merge_with_gap(rows, max_gap))
         for s, e in merge_with_gap(rows, max_gap):
-            print(f"{s}~{e} row, col {col} has problems")
+            start_time = data[time_index].iloc[s]
+            end_time = data[time_index].iloc[e]
+            print(f"{s}~{e} row, col {col} have problems")
+            print(f"{start_time} ~ {end_time} ")
+    data = data.apply(pd.to_numeric, errors='coerce')
     return data
 
 if __name__ == '__main__':

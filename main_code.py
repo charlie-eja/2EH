@@ -38,7 +38,6 @@ def main():
     # try:
         data = pd.read_excel(r'data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
         data = preprocessing.find_nan_data(data,max_gap=5)
-        data = data.apply(pd.to_numeric, errors='coerce')
 
         data_title = data.columns.tolist()[1:]
         data_title = [s[6:] for s in data_title]
