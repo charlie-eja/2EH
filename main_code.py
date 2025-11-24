@@ -36,7 +36,7 @@ def simulation_tsne(x,y=None):
 
 def main():
     # try:
-        data = pd.read_excel(r'D:\Pycharm Project\2EH\data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
+        data = pd.read_excel(r'data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
         data = preprocessing.find_nan_data(data,max_gap=5)
         data = data.apply(pd.to_numeric, errors='coerce')
 

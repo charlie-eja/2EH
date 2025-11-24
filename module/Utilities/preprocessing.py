@@ -224,4 +224,4 @@ def find_nan_data(data : pd.DataFrame,
     return data
 
 if __name__ == '__main__':
-    data=pd.read_excel(r'D:\Pycharm Project\2EH\data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
+    data=pd.read_excel(r'data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
