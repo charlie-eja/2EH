@@ -36,17 +36,17 @@ def simulation_tsne(x,y=None):
 
 def main():
     # try:
-        data = pd.read_excel(r'D:\Pycharm Project\2EH\data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
+        data = pd.read_excel(r'data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
         data = preprocessing.find_nan_data(data,max_gap=5)
         data = data.apply(pd.to_numeric, errors='coerce')
 
         data_title = data.columns.tolist()[1:]
         data_title = [s[6:] for s in data_title]
 
-        start_time_list=['2023-01-01','2023-05-20','2023-08-13']
-        end_time_list  =['2023-05-10','2023-07-22','2023-12-01']
+        start_time_list=['2023-01-01','2023-05-20']
+        end_time_list  =['2023-05-10','2023-07-22']
 
-        interval_data ,data_lengths= preprocessing.multi_time_sampling(
+        train_interval_data , train_data_lengths= preprocessing.multi_time_sampling(
             data,
             start_time_list,
             end_time_list,
@@ -54,10 +54,27 @@ def main():
             time_index='Time',
             time_low=True)
 
-        normalize_data, mean_data, std_data = preprocessing.normalize_gaussian(data=interval_data)
-        all_x,all_y=preprocessing.multi_sort_3D_data(normalize_data,
-                                                     data_lengths=data_lengths,
+        start_time_list=['2023-08-13']
+        end_time_list  =['2023-12-01']
+
+        test_interval_data , test_data_lengths= preprocessing.multi_time_sampling(
+            data,
+            start_time_list,
+            end_time_list,
+            interval_count=1800,
+            time_index='Time',
+            time_low=True)
+
+        train_normalize_data, train_mean_data, train_std_data = preprocessing.normalize_gaussian(data=train_interval_data)
+        test_normalize_data, test_mean_data, test_std_data = preprocessing.normalize_gaussian(data=test_interval_data)
+
+        all_x,all_y=preprocessing.multi_sort_3D_data(train_normalize_data,
+                                                     data_lengths=train_data_lengths,
                                                      jump_step=2,)
+        
+        test_all_x,test_all_y=preprocessing.multi_sort_3D_data(test_normalize_data,
+                                                               data_lengths=test_data_lengths,
+                                                               jump_step=2,)
 
         # simulation_pca(data_title,x=normalize_data)
         # simulation_tsne(x=normalize_data)
@@ -65,6 +82,8 @@ def main():
 
         seq2seq_model,history=seq2seq.seq2seq_model(all_x,all_y)
         seq2seq_plot.plot_loss(history=history)
+        print(history.history)
+        print(seq2seq_model.evaluate(test_all_x,test_all_y,batch_size=64))
 
         print('end')
     # except Exception as e:

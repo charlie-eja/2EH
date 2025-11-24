@@ -59,6 +59,7 @@ def time_sampling(data : pd.DataFrame,
                   time_index : str ='Time',
                   time_low=True) -> np.ndarray:
     ''' time samping '''
+    
     excel_time = pd.to_datetime(data[time_index], errors='coerce')
     if start_time is None:
         start_index=0
@@ -223,4 +224,4 @@ def find_nan_data(data : pd.DataFrame,
     return data
 
 if __name__ == '__main__':
-    data=pd.read_excel(r'D:\Pycharm Project\2EH\data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
+    data=pd.read_excel(r'data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
