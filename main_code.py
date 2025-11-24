@@ -5,7 +5,7 @@ import pandas as pd
 
 from module.Utilities import preprocessing , error_callback
 from module.dim_reduce import PCA as PCA_EJ ,UMAP as UMAP_EJ ,tSNE as tSNE_EJ
-from module.plot_figure import PCA_plot , UMPA_plot , tSNE_plot
+from module.plot_figure import PCA_plot , UMPA_plot , TSNE_plot
 from module.nn_regression import seq2seq
 from module.nn_plot_figure import seq2seq_plot
 
@@ -31,8 +31,8 @@ def simulation_tsne(x,y=None):
     # x, y = load_iris(return_X_y=True)
     normalize_data, mean_data, std_data = preprocessing.normalize_gaussian(data=x)
     tSNE_EJ.tsne_train(data=normalize_data,n_components=2,perplexity=30,random_state=42,)
-    tSNE_plot.tsne_plot_2D_html(data=normalize_data,labels=y,plot_samping=-1,)
-    tSNE_plot.tsne_plot_2D_color_html(data=normalize_data,plot_samping=-1,)
+    TSNE_plot.tsne_plot_2D_html(data=normalize_data,labels=y,plot_samping=-1,)
+    TSNE_plot.tsne_plot_2D_color_html(data=normalize_data,plot_samping=-1,)
 
 def main():
     # try:
