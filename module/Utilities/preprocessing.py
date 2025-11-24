@@ -151,14 +151,14 @@ def multi_time_sampling(data : pd.DataFrame,
         print('start_time_list length should be equal to end_time_list length')
 
 def sort_3D_data(data : np.ndarray,
-                 intput_index : list =[0,1],
-                 out_put_index : list =[2,3],
+                 input_index : list =[0,1],
+                 output_index : list =[2,3],
                  input_time_step : int=5,
                  output_time_step : int=6,
                  jump_step : int=1)  ->  Tuple[np.ndarray,np.ndarray]:
-    data_x = data[:,intput_index]
+    data_x = data[:,input_index]
     _, x_dimension = data_x.shape
-    data_y = data[input_time_step:,out_put_index]
+    data_y = data[input_time_step:,output_index]
     _, y_dimension = data_y.shape
     all_x = np.lib.stride_tricks.sliding_window_view(data_x, (input_time_step, x_dimension)).squeeze(axis=1)
     all_y = np.lib.stride_tricks.sliding_window_view(data_y, (output_time_step, y_dimension)).squeeze(axis=1)
@@ -179,8 +179,8 @@ def multi_sort_3D_data(data : np.ndarray,
     for start, end in zip(data_lengths, data_lengths[1:]):
         small_data = data[start:end]
         data_x_3D,data_y_3D = sort_3D_data(small_data,
-                                           intput_index=intput_index,
-                                           out_put_index=out_put_index,
+                                           input_index=intput_index,
+                                           output_index=out_put_index,
                                            input_time_step=input_time_step,
                                            output_time_step=output_time_step,
                                            jump_step=jump_step)
@@ -219,6 +219,7 @@ def find_nan_data(data : pd.DataFrame,
                     bad_positions.setdefault(col, []).append(i)
                     data.at[i, col] = 0.0
     for col, rows in bad_positions.items():
+        print(merge_with_gap(rows, max_gap))
         for s, e in merge_with_gap(rows, max_gap):
             print(f"{s}~{e} row, col {col} has problems")
     return data
