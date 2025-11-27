@@ -126,8 +126,7 @@ def multi_time_sampling(data : pd.DataFrame,
                         start_time_list : list,
                         end_time_list : list,
                         interval_count : int =None,
-                        time_index :str ='Time',
-                        time_low=True)  ->  Tuple[np.ndarray,list]:
+                        time_index :str ='Time')  ->  Tuple[np.ndarray,list]:
     if len(start_time_list)==len(end_time_list):
         interval_list=[
             time_sampling(
@@ -136,7 +135,6 @@ def multi_time_sampling(data : pd.DataFrame,
                 end_time=end_time,
                 interval_count=interval_count,
                 time_index=time_index,
-                time_low=time_low,
             )
             for start_time, end_time in zip(start_time_list, end_time_list)]
         data_lengths = [arr.shape[0] for arr in interval_list]
@@ -163,8 +161,8 @@ def sort_3D_data(data : np.ndarray,
     return data_x_3D,data_y_3D
 
 def multi_sort_3D_data(data : np.ndarray,
-                       intput_index : list =[0,1],
-                       out_put_index : list =[2,3],
+                       input_index : list =[0,1],
+                       output_index : list =[2,3],
                        input_time_step : int=5,
                        output_time_step : int=6,
                        jump_step : int=1,
@@ -175,8 +173,8 @@ def multi_sort_3D_data(data : np.ndarray,
     for start, end in zip(data_lengths, data_lengths[1:]):
         small_data = data[start:end]
         data_x_3D,data_y_3D = sort_3D_data(small_data,
-                                           input_index=intput_index,
-                                           output_index=out_put_index,
+                                           input_index=input_index,
+                                           output_index=output_index,
                                            input_time_step=input_time_step,
                                            output_time_step=output_time_step,
                                            jump_step=jump_step)
@@ -222,6 +220,13 @@ def find_nan_data(data : pd.DataFrame,
             print(f"{start_time} ~ {end_time} ")
     data = data.apply(pd.to_numeric, errors='coerce')
     return data
+
+def find_index(title : pd.DataFrame,
+               input_list : list,
+               output_list :list ) -> Tuple[list,list]:
+    input_index_list = [title.get_loc(col)-1 for col in input_list]
+    output_index_list = [title.get_loc(col)-1 for col in output_list]
+    return  input_index_list,output_index_list
 
 if __name__ == '__main__':
     data=pd.read_excel(r'data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
