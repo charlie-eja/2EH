@@ -78,8 +78,13 @@ def main():
         # simulation_tsne(x=normalize_data)
         # simulation_umap(x=normalize_data)
 
-        x_train, x_test, y_train, y_test = train_test_split(
+        x_train_val, x_test, y_train_val, y_test = train_test_split(
             all_x, all_y, test_size=0.2, random_state=42
+        )
+
+
+        x_train, x_val, y_train, y_val= train_test_split(
+            x_train_val, y_train_val, test_size=0.1, random_state=42
         )
 
         x_hidden = 5

@@ -5,6 +5,8 @@ import numpy as np
 
 def seq2seq_model(x : np.ndarray,
                   y : np.ndarray,
+                  x_val : np.ndarray,
+                  y_val : np.ndarray,
                   x_hidden : int = 40,
                   y_hidden : int = 40,
                   batch_size : int =64,
@@ -14,7 +16,7 @@ def seq2seq_model(x : np.ndarray,
     '''
     :param model_type:
     1. zero
-    2. randn(Gaussian)
+    2. rand_gaussian(Gaussian)
     3. yt
     4. xt_yt
     5. xt_head_yt
@@ -23,12 +25,12 @@ def seq2seq_model(x : np.ndarray,
     8. xt_head_yt_head
     '''
     if model_type == 'zero' :
-        x=x
-    elif model_type == 'randn':
-        x=x
-    decoder_input  = y[:, :-1, :]
-    decoder_target = y[:, 1:, :]
-    # decoder_target = y[:, :-1, :]
+        x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val=zero(x,y,x_val,y_val)
+    elif model_type == 'rand_gaussian':
+        x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val=zero(x,y,x_val,y_val)
+    else :
+         return print('model_type not found')
+
     x_step  = x.shape[1]
     y_step  = decoder_input.shape[1]
     x_dim = x.shape[2]
@@ -61,12 +63,133 @@ def seq2seq_model(x : np.ndarray,
 
     history=model.fit([x, decoder_input],
               decoder_target,
+              validation_data=([x_val, decoder_input_val], decoder_target_val),
               batch_size=batch_size,
               epochs=epochs,
               verbose=verbose,
               callbacks=[early_stop],)
     return model,history
 
+
+def zero(x,y,x_val,y_val):
+    '''
+    train
+    '''
+    x = x
+    decoder_input = y[:, :-1, :]
+    decoder_target = y[:, 1:, :]
+    '''
+    val
+    '''
+    x_val = x_val
+    decoder_input_val = y_val[:, :-1, :]
+    decoder_target_val = y_val[:, 1:, :]
+    return  x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val
+
+def rand_gaussian(x,y,x_val,y_val):
+    '''
+    train
+    '''
+    x = x
+    decoder_input = y[:, :-1, :]
+    decoder_target = y[:, 1:, :]
+    '''
+    val
+    '''
+    x_val = x_val
+    decoder_input_val = y_val[:, :-1, :]
+    decoder_target_val = y_val[:, 1:, :]
+    return  x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val
+
+def yt(x,y,x_val,y_val):
+    '''
+    train
+    '''
+    x = x
+    decoder_input = y[:, :-1, :]
+    decoder_target = y[:, 1:, :]
+    '''
+    val
+    '''
+    x_val = x_val
+    decoder_input_val = y_val[:, :-1, :]
+    decoder_target_val = y_val[:, 1:, :]
+    return  x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val
+
+def xt_yt(x,y,x_val,y_val):
+    '''
+    train
+    '''
+    x = x
+    decoder_input = y[:, :-1, :]
+    decoder_target = y[:, 1:, :]
+    '''
+    val
+    '''
+    x_val = x_val
+    decoder_input_val = y_val[:, :-1, :]
+    decoder_target_val = y_val[:, 1:, :]
+    return  x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val
+
+def xt_head_yt(x,y,x_val,y_val):
+    '''
+    train
+    '''
+    x = x
+    decoder_input = y[:, :-1, :]
+    decoder_target = y[:, 1:, :]
+    '''
+    val
+    '''
+    x_val = x_val
+    decoder_input_val = y_val[:, :-1, :]
+    decoder_target_val = y_val[:, 1:, :]
+    return  x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val
+
+def yt_head(x,y,x_val,y_val):
+    '''
+    train
+    '''
+    x = x
+    decoder_input = y[:, :-1, :]
+    decoder_target = y[:, 1:, :]
+    '''
+    val
+    '''
+    x_val = x_val
+    decoder_input_val = y_val[:, :-1, :]
+    decoder_target_val = y_val[:, 1:, :]
+    return  x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val
+
+def xt_yt_head(x,y,x_val,y_val):
+    '''
+    train
+    '''
+    x = x
+    decoder_input = y[:, :-1, :]
+    decoder_target = y[:, 1:, :]
+    '''
+    val
+    '''
+    x_val = x_val
+    decoder_input_val = y_val[:, :-1, :]
+    decoder_target_val = y_val[:, 1:, :]
+    return  x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val
+
+def xt_head_yt_head(x,y,x_val,y_val):
+    '''
+    train
+    '''
+    x = x
+    decoder_input = y[:, :-1, :]
+    decoder_target = y[:, 1:, :]
+    '''
+    val
+    '''
+    x_val = x_val
+    decoder_input_val = y_val[:, :-1, :]
+    decoder_target_val = y_val[:, 1:, :]
+    return  x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val
 
 def build_inference_models(model, y_dim, hidden):
     # ===== Encoder: X -> (h, c) =====
