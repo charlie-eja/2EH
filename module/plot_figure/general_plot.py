@@ -1,7 +1,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def general_plot_2D(data : np.ndarray,labels : np.ndarray=None,plot_samping : int =-1):
+def general_plot_2D(data : np.ndarray,labels : np.ndarray=None,
+                    plot_samping : int =-1,
+                    title : str="general figure",
+                    xlabel : str="general figure",
+                    ylabel : str="general figure",
+                    figure_name : str="general",):
     plt.figure(figsize=(6, 5))
     plt.scatter(data[:, 0], data[:, 1], c=labels)
 
@@ -9,11 +14,11 @@ def general_plot_2D(data : np.ndarray,labels : np.ndarray=None,plot_samping : in
         plt.text(data[i, 0], data[i, 1], str(i),
                  fontsize=8, color='black',)
 
-    plt.title("general figure")
-    plt.xlabel("X")
-    plt.ylabel("Y")
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
     plt.tight_layout()
-    plt.savefig('general.png', dpi=150)
+    plt.savefig(f'{figure_name}.png', dpi=150)
     plt.show()
 
 def general_plot_2D_color(data : np.ndarray,plot_samping : int =-1):

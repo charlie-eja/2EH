@@ -228,5 +228,13 @@ def find_index(title : pd.DataFrame,
     output_index_list = [title.get_loc(col)-1 for col in output_list]
     return  input_index_list,output_index_list
 
+def k_fold(all_length,i,equal_division):
+    idx = np.arange(all_length)
+    folds = np.array_split(idx, equal_division)
+
+    test_idx = folds[i]
+    train_idx = np.hstack([folds[j] for j in range(equal_division) if j != i])
+    return train_idx, test_idx
+
 if __name__ == '__main__':
     data=pd.read_excel(r'data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')

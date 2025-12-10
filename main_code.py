@@ -47,7 +47,8 @@ def main():
                       'ML2EH_TI-127-1.PV','ML2EH_TI-127-2.PV','ML2EH_TI-128-3.PV',
                       'ML2EH_TI-126-8.PV','ML2EH_TI-126-2.PV','ML2EH_FIC-115-3.PV',]
         output_list = ['ML2EH_FI-165-1.PV','ML2EH_TI-128-1.PV','ML2EH_H143-O2',
-                       'ML2EH_TIC-126-1.PV','ML2EH_TI-126-3.PV',]
+                       'ML2EH_TIC-126-1.PV',] #'ML2EH_TI-126-3.PV',
+
 
         input_index_list,output_index_list=preprocessing.find_index(data.columns,input_list,output_list)
 
@@ -66,49 +67,61 @@ def main():
 
         normalize_data, mean_data, std_data = preprocessing.normalize_gaussian(data=interval_data)
 
+
+
         all_x,all_y=preprocessing.multi_sort_3D_data(normalize_data,
                                                      data_lengths=data_lengths,
-                                                     jump_step=2,
+                                                     jump_step=1,
                                                      input_index=input_index_list+output_index_list,
                                                      output_index=output_index_list,
                                                      input_time_step=24,
-                                                     output_time_step=10)
-
-        # simulation_pca(data_title,x=normalize_data)
-        # simulation_tsne(x=normalize_data)
-        # simulation_umap(x=normalize_data)
-
-        x_train_val, x_test, y_train_val, y_test = train_test_split(
-            all_x, all_y, test_size=0.2, random_state=42
-        )
+                                                     output_time_step=10) # all_x[0~input_time_step], all_y[input_time_step~output_time_step]
 
 
-        x_train, x_val, y_train, y_val= train_test_split(
-            x_train_val, y_train_val, test_size=0.1, random_state=42
-        )
 
-        x_hidden = 5
-        y_hidden = 5
-        seq2seq_model,history=seq2seq.seq2seq_model(x_train,y_train,epochs=100,x_hidden=x_hidden,y_hidden=y_hidden)
-        seq2seq_plot.plot_loss(history=history)
+        equal_division=10
+        all_y_test=[]
+        all_y_pred=[]
+        for i in range(equal_division):
+            train_idx, test_idx = preprocessing.k_fold(len(all_x), i, equal_division)
+            x_hidden = all_x.shape[2] + 4
+            y_hidden = all_x.shape[2] + 4
+            model_type = 'zero'
+            seq2seq_model, history = seq2seq.seq2seq_model(x=all_x[train_idx],
+                                                           y=all_y[train_idx],
+                                                           epochs=100,
+                                                           x_hidden=x_hidden,
+                                                           y_hidden=y_hidden,
+                                                           model_type=model_type)
+            # seq2seq_plot.plot_loss(history=history)
+            x_test = all_x[test_idx]
+            y_test = all_y[test_idx]
+            y_pred = seq2seq.predict_next(x=x_test,
+                                          y=y_test,
+                                          x_hidden=x_hidden,
+                                          y_hidden=y_hidden,
+                                          model = seq2seq_model,
+                                          time_step=10,
+                                          model_type=model_type)
+            y_pred = y_pred * std_data[output_index_list] + mean_data[output_index_list]
+            y_test = y_test * std_data[output_index_list] + mean_data[output_index_list]
 
+            all_y_pred .append(y_pred )
+            all_y_test.append(y_test)
 
-        # x_test=all_x
-        # y_test=all_y
-
-        y_dim =  y_test.shape[2]
-        encoder_model, decoder_model = seq2seq.build_inference_models(seq2seq_model, y_dim, y_hidden)
-        x_seq =  x_test  # (N, time_step, x_dim)
-        y_now =  y_test[:, 0]  # (N, y_dim)
-        y_pred = seq2seq.predict_next(x_seq, y_now, encoder_model, decoder_model, y_dim,time_step=10)
-
-        y_pred = y_pred*std_data[output_index_list]+mean_data[output_index_list]
-        y_test =  y_test * std_data[output_index_list] + mean_data[output_index_list]
-
-        seq2seq_plot.plot_prediction( y_test, y_pred, output_list,step_index=1)
-        seq2seq_plot.plot_prediction( y_test, y_pred, output_list, step_index=9)
+        all_y_test=np.concatenate(all_y_test, axis=0)
+        all_y_pred = np.concatenate(all_y_pred, axis=0)
+        seq2seq_plot.plot_prediction(all_y_test, all_y_pred, output_list, step_index=1)
+        seq2seq_plot.plot_prediction(all_y_test, all_y_pred, output_list, step_index=9)
+        # int('s')
 
         print('end')
+        print(f'start_time_list {start_time_list}')
+        print(f'end_time_list {end_time_list}')
+        print(np.cumsum(data_lengths))
+
+
+
     # except Exception as e:
     #     error_callback.print_project_trace(e)
 

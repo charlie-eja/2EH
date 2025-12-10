@@ -5,14 +5,12 @@ import numpy as np
 
 def seq2seq_model(x : np.ndarray,
                   y : np.ndarray,
-                  x_val : np.ndarray,
-                  y_val : np.ndarray,
+                  model_type : str ,
                   x_hidden : int = 40,
                   y_hidden : int = 40,
                   batch_size : int =64,
                   epochs : int =100,
-                  verbose : int =1,
-                  model_type : str ='zero',):
+                  verbose : int =1,):
     '''
     :param model_type:
     1. zero
@@ -25,9 +23,13 @@ def seq2seq_model(x : np.ndarray,
     8. xt_head_yt_head
     '''
     if model_type == 'zero' :
-        x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val=zero(x,y,x_val,y_val)
+        x,decoder_input,decoder_target=zero(x,y)
     elif model_type == 'rand_gaussian':
-        x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val=zero(x,y,x_val,y_val)
+        x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val=rand_gaussian(x,y,x_val,y_val)
+    elif model_type == 'yt':
+        x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val=yt(x,y,x_val,y_val)
+    elif model_type == 'xt_yt':
+        x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val=xt_yt(x,y,x_val,y_val)
     else :
          return print('model_type not found')
 
@@ -35,6 +37,7 @@ def seq2seq_model(x : np.ndarray,
     y_step  = decoder_input.shape[1]
     x_dim = x.shape[2]
     y_dim = y.shape[2]
+    decoder_input_dim = decoder_input.shape[2]
     x_hidden = x_hidden
     y_hidden = y_hidden
 
@@ -43,7 +46,7 @@ def seq2seq_model(x : np.ndarray,
     enc_out, enc_h, enc_c = enc_lstm(enc_inputs)
     enc_states = [enc_h, enc_c]
 
-    dec_inputs = layers.Input(shape=(y_step, y_dim), name="decoder_inputs")
+    dec_inputs = layers.Input(shape=(y_step, decoder_input_dim), name="decoder_inputs")
     dec_lstm = layers.LSTM(y_hidden, return_sequences=True, return_state=True, name="decoder_lstm")
     dec_out, _, _ = dec_lstm(dec_inputs, initial_state=enc_states)
 
@@ -63,7 +66,6 @@ def seq2seq_model(x : np.ndarray,
 
     history=model.fit([x, decoder_input],
               decoder_target,
-              validation_data=([x_val, decoder_input_val], decoder_target_val),
               batch_size=batch_size,
               epochs=epochs,
               verbose=verbose,
@@ -71,129 +73,39 @@ def seq2seq_model(x : np.ndarray,
     return model,history
 
 
-def zero(x,y,x_val,y_val):
-    '''
-    train
-    '''
+def zero(x,y):
     x = x
-    decoder_input = y[:, :-1, :]
-    decoder_target = y[:, 1:, :]
-    '''
-    val
-    '''
-    x_val = x_val
-    decoder_input_val = y_val[:, :-1, :]
-    decoder_target_val = y_val[:, 1:, :]
-    return  x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val
+    decoder_input = np.zeros((y.shape[0],y.shape[1],y.shape[2]))
+    decoder_target = y
+    return  x,decoder_input,decoder_target
 
-def rand_gaussian(x,y,x_val,y_val):
-    '''
-    train
-    '''
+def rand_gaussian(x,y):
     x = x
-    decoder_input = y[:, :-1, :]
-    decoder_target = y[:, 1:, :]
-    '''
-    val
-    '''
-    x_val = x_val
-    decoder_input_val = y_val[:, :-1, :]
-    decoder_target_val = y_val[:, 1:, :]
-    return  x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val
+    decoder_input = np.random.randn(y.shape[0],y.shape[1],y.shape[2])
+    decoder_target = y
+    return  x,decoder_input,decoder_target
 
-def yt(x,y,x_val,y_val):
-    '''
-    train
-    '''
-    x = x
-    decoder_input = y[:, :-1, :]
-    decoder_target = y[:, 1:, :]
-    '''
-    val
-    '''
-    x_val = x_val
-    decoder_input_val = y_val[:, :-1, :]
-    decoder_target_val = y_val[:, 1:, :]
-    return  x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val
+def yt(x,y):
 
-def xt_yt(x,y,x_val,y_val):
-    '''
-    train
-    '''
-    x = x
-    decoder_input = y[:, :-1, :]
-    decoder_target = y[:, 1:, :]
-    '''
-    val
-    '''
-    x_val = x_val
-    decoder_input_val = y_val[:, :-1, :]
-    decoder_target_val = y_val[:, 1:, :]
-    return  x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val
+    x = x[:,:-1,:]
+    input_shape = x.shape[2]-y.shape[2]
+    decoder_input = x[:,-1,input_shape:]
+    decoder_input = np.repeat(decoder_input[:, None, :], y.shape[1], axis=1)
+    decoder_target = y
 
-def xt_head_yt(x,y,x_val,y_val):
-    '''
-    train
-    '''
-    x = x
-    decoder_input = y[:, :-1, :]
-    decoder_target = y[:, 1:, :]
-    '''
-    val
-    '''
-    x_val = x_val
-    decoder_input_val = y_val[:, :-1, :]
-    decoder_target_val = y_val[:, 1:, :]
-    return  x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val
+    return  x,decoder_input,decoder_target
 
-def yt_head(x,y,x_val,y_val):
-    '''
-    train
-    '''
-    x = x
-    decoder_input = y[:, :-1, :]
-    decoder_target = y[:, 1:, :]
-    '''
-    val
-    '''
-    x_val = x_val
-    decoder_input_val = y_val[:, :-1, :]
-    decoder_target_val = y_val[:, 1:, :]
-    return  x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val
+def xt_yt(x,y):
+    x = x[:,:-1,:]
+    decoder_input = x[:, -1, :]
+    decoder_input = np.repeat(decoder_input[:, None, :], y.shape[1], axis=1)
+    decoder_target = y
+    return  x,decoder_input,decoder_target
 
-def xt_yt_head(x,y,x_val,y_val):
-    '''
-    train
-    '''
-    x = x
-    decoder_input = y[:, :-1, :]
-    decoder_target = y[:, 1:, :]
-    '''
-    val
-    '''
-    x_val = x_val
-    decoder_input_val = y_val[:, :-1, :]
-    decoder_target_val = y_val[:, 1:, :]
-    return  x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val
-
-def xt_head_yt_head(x,y,x_val,y_val):
-    '''
-    train
-    '''
-    x = x
-    decoder_input = y[:, :-1, :]
-    decoder_target = y[:, 1:, :]
-    '''
-    val
-    '''
-    x_val = x_val
-    decoder_input_val = y_val[:, :-1, :]
-    decoder_target_val = y_val[:, 1:, :]
-    return  x,decoder_input,decoder_target,x_val,decoder_input_val,decoder_target_val
 
 def build_inference_models(model, y_dim, hidden):
     # ===== Encoder: X -> (h, c) =====
-    encoder_inputs = model.input[0]  # [encoder_inputs, decoder_inputs] 的第 0 個
+    encoder_inputs = model.input[0]  # [encoder_inputs, decoder_inputs]
     _, state_h, state_c = model.get_layer("encoder_lstm").output
     encoder_model = Model(encoder_inputs, [state_h, state_c])
 
@@ -218,17 +130,44 @@ def build_inference_models(model, y_dim, hidden):
 
     return encoder_model, decoder_model
 
-def predict_next(x_seq, y_now, encoder_model, decoder_model, y_dim,time_step=3):
 
-    h, c = encoder_model.predict(x_seq)
-    batch = x_seq.shape[0]
-    y_prev = y_now.reshape(batch, 1, y_dim)
+def predict_next(x,y,x_hidden,y_hidden,model,model_type,time_step=3):
+    x_dim = x.shape[2]
+    y_dim = y.shape[2]
+    if model_type == 'zero' :
+        x = x
+        dim = y_dim
+        y_now = np.zeros((x.shape[0], 1, dim))
+    elif model_type == 'rand_gaussian' :
+        x = x
+        dim = y_dim
+        y_now = np.random.randn(x.shape[0], 1, dim)
+    elif model_type == 'yt' :
+        x = x[:,:-1,:]
+        input_shape = x.shape[2]-y.shape[2]
+        y_now = x[:,-1,input_shape:]
+        dim = y_dim
+    elif model_type == 'xt_yt' :
+        x = x[:, :-1, :]
+        y_now = x[:, -1, :]
+        dim = x_dim
 
+    encoder_model, decoder_model = build_inference_models(model, dim, y_hidden)
+    h, c = encoder_model.predict(x)
+    y_prev = y_now.reshape(x.shape[0], 1, dim)
     outputs = []
     for _ in range(time_step):
         y_step, h, c = decoder_model.predict([y_prev, h, c])
         outputs.append(y_step)
-        y_prev = y_step
+        if model_type == 'zero':
+            y_prev = y_now.reshape(x.shape[0], 1, dim)
+        elif model_type == 'rand_gaussian':
+            y_now = np.random.randn(x.shape[0], 1, dim)
+            y_prev = y_now.reshape(x.shape[0], 1, dim)
+        elif model_type == 'yt':
+            y_prev = y_now.reshape(x.shape[0], 1, dim)
+        elif model_type == 'xt_yt':
+            y_prev = y_now.reshape(x.shape[0], 1, dim)
 
     y_pred = np.concatenate(outputs, axis=1)  # -> (N, time_step, y_dim)
     return y_pred
