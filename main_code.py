@@ -2,6 +2,7 @@ import numpy as np
 
 from sklearn.datasets import load_iris
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
 from module.Utilities import preprocessing , error_callback
 from module.dim_reduce import PCA as PCA_EJ ,UMAP as UMAP_EJ ,tSNE as tSNE_EJ
@@ -38,54 +39,89 @@ def main():
     # try:
         data = pd.read_excel(r'data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
         data = preprocessing.find_nan_data(data,max_gap=5)
-        data = data.apply(pd.to_numeric, errors='coerce')
 
-        data_title = data.columns.tolist()[1:]
-        data_title = [s[6:] for s in data_title]
 
-        start_time_list=['2023-01-01','2023-05-20']
-        end_time_list  =['2023-05-10','2023-07-22']
+        input_list = ['ML2EH_TI-141-11A.PV','ML2EH_TI-141-11B.PV','ML2EH_TI-141-11C.PV',
+                      'ML2EH_TI-134-1.PV','ML2EH_TI-134-2.PV','ML2EH_TI-126-4.PV',
+                      'ML2EH_TI-126-5.PV','ML2EH_TI-126-6.PV','ML2EH_TI-126-7.PV',
+                      'ML2EH_TI-127-1.PV','ML2EH_TI-127-2.PV','ML2EH_TI-128-3.PV',
+                      'ML2EH_TI-126-8.PV','ML2EH_TI-126-2.PV','ML2EH_FIC-115-3.PV',]
+        output_list = ['ML2EH_FI-165-1.PV','ML2EH_TI-128-1.PV','ML2EH_H143-O2',
+                       'ML2EH_TIC-126-1.PV',] #'ML2EH_TI-126-3.PV',
 
-        train_interval_data , train_data_lengths= preprocessing.multi_time_sampling(
+
+        input_index_list,output_index_list=preprocessing.find_index(data.columns,input_list,output_list)
+
+        # data_title = data.columns.tolist()[1:]
+        # data_title = [s[6:] for s in data_title]
+
+        start_time_list=['2023-01-01','2023-05-20','2023-08-13']
+        end_time_list  =['2023-05-10','2023-07-22','2023-12-01']
+
+        interval_data ,data_lengths= preprocessing.multi_time_sampling(
             data,
             start_time_list,
             end_time_list,
-            interval_count=1800,
-            time_index='Time',
-            time_low=True)
+            interval_count=3600,
+            time_index='Time',)
 
-        start_time_list=['2023-08-13']
-        end_time_list  =['2023-12-01']
+        normalize_data, mean_data, std_data = preprocessing.normalize_gaussian(data=interval_data)
 
-        test_interval_data , test_data_lengths= preprocessing.multi_time_sampling(
-            data,
-            start_time_list,
-            end_time_list,
-            interval_count=1800,
-            time_index='Time',
-            time_low=True)
 
-        train_normalize_data, train_mean_data, train_std_data = preprocessing.normalize_gaussian(data=train_interval_data)
-        test_normalize_data, test_mean_data, test_std_data = preprocessing.normalize_gaussian(data=test_interval_data)
 
-        all_x,all_y=preprocessing.multi_sort_3D_data(train_normalize_data,
-                                                     data_lengths=train_data_lengths,
-                                                     jump_step=2,)
-        
-        test_all_x,test_all_y=preprocessing.multi_sort_3D_data(test_normalize_data,
-                                                               data_lengths=test_data_lengths,
-                                                               jump_step=2,)
+        all_x,all_y=preprocessing.multi_sort_3D_data(normalize_data,
+                                                     data_lengths=data_lengths,
+                                                     jump_step=1,
+                                                     input_index=input_index_list+output_index_list,
+                                                     output_index=output_index_list,
+                                                     input_time_step=24,
+                                                     output_time_step=10) # all_x[0~input_time_step], all_y[input_time_step~output_time_step]
 
-        # simulation_pca(data_title,x=normalize_data)
-        # simulation_tsne(x=normalize_data)
-        # simulation_umap(x=normalize_data)
 
-        seq2seq_model,history=seq2seq.seq2seq_model(all_x,all_y)
-        seq2seq_plot.plot_loss(history=history)
-        print(history.history)
-        print(seq2seq_model.evaluate(test_all_x,test_all_y,batch_size=64))
+
+        equal_division=10
+        all_y_test=[]
+        all_y_pred=[]
+        for i in range(equal_division):
+            train_idx, test_idx = preprocessing.k_fold(len(all_x), i, equal_division)
+            x_hidden = all_x.shape[2] + 4
+            y_hidden = all_x.shape[2] + 4
+            model_type = 'zero'
+            seq2seq_model, history = seq2seq.seq2seq_model(x=all_x[train_idx],
+                                                           y=all_y[train_idx],
+                                                           epochs=100,
+                                                           x_hidden=x_hidden,
+                                                           y_hidden=y_hidden,
+                                                           model_type=model_type)
+            # seq2seq_plot.plot_loss(history=history)
+            x_test = all_x[test_idx]
+            y_test = all_y[test_idx]
+            y_pred = seq2seq.predict_next(x=x_test,
+                                          y=y_test,
+                                          x_hidden=x_hidden,
+                                          y_hidden=y_hidden,
+                                          model = seq2seq_model,
+                                          time_step=10,
+                                          model_type=model_type)
+            y_pred = y_pred * std_data[output_index_list] + mean_data[output_index_list]
+            y_test = y_test * std_data[output_index_list] + mean_data[output_index_list]
+
+            all_y_pred .append(y_pred )
+            all_y_test.append(y_test)
+
+        all_y_test=np.concatenate(all_y_test, axis=0)
+        all_y_pred = np.concatenate(all_y_pred, axis=0)
+        seq2seq_plot.plot_prediction(all_y_test, all_y_pred, output_list, step_index=1)
+        seq2seq_plot.plot_prediction(all_y_test, all_y_pred, output_list, step_index=9)
+        # int('s')
 
         print('end')
+        print(f'start_time_list {start_time_list}')
+        print(f'end_time_list {end_time_list}')
+        print(np.cumsum(data_lengths))
+
+
+
     # except Exception as e:
     #     error_callback.print_project_trace(e)
 

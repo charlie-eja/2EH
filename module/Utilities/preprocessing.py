@@ -5,9 +5,9 @@ from itertools import accumulate
 from typing import Tuple
 
 def interval_sampling(data : pd.DataFrame,
-                      start_index : str =0,
-                      end_index : str =-1,
-                      interval_count : str=1) -> pd.DataFrame:
+                      start_index : int =0,
+                      end_index : int =-1,
+                      interval_count : int=1) -> pd.DataFrame:
     '''interval sampling '''
     if interval_count==1:
         interval_data = data.iloc[start_index:end_index:int(interval_count)]
@@ -56,8 +56,7 @@ def time_sampling(data : pd.DataFrame,
                   start_time : str =None,
                   end_time : str =None,
                   interval_count : int =None,
-                  time_index : str ='Time',
-                  time_low=True) -> np.ndarray:
+                  time_index : str ='Time',) -> np.ndarray:
     ''' time samping '''
     
     excel_time = pd.to_datetime(data[time_index], errors='coerce')
@@ -89,13 +88,11 @@ def time_sampling(data : pd.DataFrame,
         time_ratio=interval_count/int(interval_time)
 
     interval_data=interval_sampling(data, start_index=start_index, end_index= end_index, interval_count=time_ratio)
-    if time_low:
-        interval_data=interval_data.iloc[:, 1:].to_numpy(dtype=float)
-    else:
-        interval_data=interval_data.iloc.to_numpy(dtype=float)
+    interval_data=interval_data.iloc[:, 1:].to_numpy(dtype=float)
+
     return interval_data
 
-def detect_time_interval(series: pd.Series) -> Tuple[str]:
+def detect_time_interval(series: pd.Series) -> str:
     """
     Automatically determine the closest interval level based on the time series.
     < 60 seconds: round to the nearest seconds
@@ -130,8 +127,7 @@ def multi_time_sampling(data : pd.DataFrame,
                         start_time_list : list,
                         end_time_list : list,
                         interval_count : int =None,
-                        time_index :str ='Time',
-                        time_low=True)  ->  Tuple[np.ndarray,list]:
+                        time_index :str ='Time')  ->  Tuple[np.ndarray,list]:
     if len(start_time_list)==len(end_time_list):
         interval_list=[
             time_sampling(
@@ -140,7 +136,6 @@ def multi_time_sampling(data : pd.DataFrame,
                 end_time=end_time,
                 interval_count=interval_count,
                 time_index=time_index,
-                time_low=time_low,
             )
             for start_time, end_time in zip(start_time_list, end_time_list)]
         data_lengths = [arr.shape[0] for arr in interval_list]
@@ -167,8 +162,8 @@ def sort_3D_data(data : np.ndarray,
     return data_x_3D,data_y_3D
 
 def multi_sort_3D_data(data : np.ndarray,
-                       intput_index : list =[0,1],
-                       out_put_index : list =[2,3],
+                       input_index : list =[0,1],
+                       output_index : list =[2,3],
                        input_time_step : int=5,
                        output_time_step : int=6,
                        jump_step : int=1,
@@ -179,8 +174,8 @@ def multi_sort_3D_data(data : np.ndarray,
     for start, end in zip(data_lengths, data_lengths[1:]):
         small_data = data[start:end]
         data_x_3D,data_y_3D = sort_3D_data(small_data,
-                                           input_index=intput_index,
-                                           output_index=out_put_index,
+                                           input_index=input_index,
+                                           output_index=output_index,
                                            input_time_step=input_time_step,
                                            output_time_step=output_time_step,
                                            jump_step=jump_step)
@@ -219,10 +214,28 @@ def find_nan_data(data : pd.DataFrame,
                     bad_positions.setdefault(col, []).append(i)
                     data.at[i, col] = 0.0
     for col, rows in bad_positions.items():
-        print(merge_with_gap(rows, max_gap))
         for s, e in merge_with_gap(rows, max_gap):
-            print(f"{s}~{e} row, col {col} has problems")
+            start_time = data[time_index].iloc[s]
+            end_time = data[time_index].iloc[e]
+            print(f"{s}~{e} row, col {col} have problems")
+            print(f"{start_time} ~ {end_time} ")
+    data = data.apply(pd.to_numeric, errors='coerce')
     return data
+
+def find_index(title : pd.DataFrame,
+               input_list : list,
+               output_list :list ) -> Tuple[list,list]:
+    input_index_list = [title.get_loc(col)-1 for col in input_list]
+    output_index_list = [title.get_loc(col)-1 for col in output_list]
+    return  input_index_list,output_index_list
+
+def k_fold(all_length,i,equal_division):
+    idx = np.arange(all_length)
+    folds = np.array_split(idx, equal_division)
+
+    test_idx = folds[i]
+    train_idx = np.hstack([folds[j] for j in range(equal_division) if j != i])
+    return train_idx, test_idx
 
 if __name__ == '__main__':
     data=pd.read_excel(r'data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
