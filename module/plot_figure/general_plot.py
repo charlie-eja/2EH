@@ -8,7 +8,11 @@ def general_plot_2D(data : np.ndarray,labels : np.ndarray=None,
                     ylabel : str="general figure",
                     figure_name : str="general",):
     plt.figure(figsize=(6, 5))
-    plt.scatter(data[:, 0], data[:, 1], c=labels)
+    if data.ndim == 1 or (data.ndim == 2 and data.shape[1] == 1):
+        x=np.arange(1, len(data) + 1)
+        plt.scatter(x, data, c=labels)
+    else:
+        plt.scatter(data[:, 0], data[:, 1], c=labels)
 
     for i in range(0,len(data),plot_samping):
         plt.text(data[i, 0], data[i, 1], str(i),
@@ -22,6 +26,7 @@ def general_plot_2D(data : np.ndarray,labels : np.ndarray=None,
     plt.show()
 
 def general_plot_2D_color(data : np.ndarray,plot_samping : int =-1):
+
     plt.figure(figsize=(6, 5))
     order_colors = np.arange(len(data))
     sc = plt.scatter(data[:, 0], data[:, 1], c=order_colors, cmap='viridis')

@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 
 from module.Utilities import preprocessing , error_callback
 from module.dim_reduce import PCA as PCA_EJ ,UMAP as UMAP_EJ ,tSNE as tSNE_EJ
-from module.plot_figure import PCA_plot , UMPA_plot , TSNE_plot
+from module.plot_figure import PCA_plot , UMPA_plot , TSNE_plot ,general_plot
 from module.nn_regression import seq2seq
 from module.nn_plot_figure import seq2seq_plot
 
@@ -45,9 +45,11 @@ def main():
                       'ML2EH_TI-134-1.PV','ML2EH_TI-134-2.PV','ML2EH_TI-126-4.PV',
                       'ML2EH_TI-126-5.PV','ML2EH_TI-126-6.PV','ML2EH_TI-126-7.PV',
                       'ML2EH_TI-127-1.PV','ML2EH_TI-127-2.PV','ML2EH_TI-128-3.PV',
-                      'ML2EH_TI-126-8.PV','ML2EH_TI-126-2.PV','ML2EH_FIC-115-3.PV',]
-        output_list = ['ML2EH_FI-165-1.PV','ML2EH_TI-128-1.PV','ML2EH_H143-O2',
-                       'ML2EH_TIC-126-1.PV',] #'ML2EH_TI-126-3.PV',
+                      'ML2EH_TI-126-8.PV','ML2EH_TI-126-2.PV','ML2EH_FIC-115-3.PV',
+                      ]
+        output_list = ['ML2EH_FI-165-1.PV','ML2EH_H143-O2','ML2EH_TI-128-1.PV',
+                       'ML2EH_TIC-126-1.PV',
+                       ] #'ML2EH_TI-126-3.PV',
 
 
         input_index_list,output_index_list=preprocessing.find_index(data.columns,input_list,output_list)
@@ -111,9 +113,17 @@ def main():
 
         all_y_test=np.concatenate(all_y_test, axis=0)
         all_y_pred = np.concatenate(all_y_pred, axis=0)
+
+
         seq2seq_plot.plot_prediction(all_y_test, all_y_pred, output_list, step_index=1)
         seq2seq_plot.plot_prediction(all_y_test, all_y_pred, output_list, step_index=9)
+
         # int('s')
+        A=all_y_test[:,1,:]
+        rows,cols = np.where(abs(A-mean_data[output_index_list])>std_data[output_index_list])
+        unique_rows = np.unique(rows)
+        seq2seq_plot.plot_prediction(all_y_test[unique_rows,:,:], all_y_pred[unique_rows,:,:], output_list, step_index=1)
+        seq2seq_plot.plot_prediction(all_y_test[unique_rows,:,:], all_y_pred[unique_rows,:,:], output_list, step_index=9)
 
         print('end')
         print(f'start_time_list {start_time_list}')
