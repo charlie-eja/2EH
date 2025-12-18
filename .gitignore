@@ -1,1 +1,9 @@
+# Python virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Data files
 data/Heat_Recovery_System.xlsx
