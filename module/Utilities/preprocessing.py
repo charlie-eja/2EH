@@ -58,6 +58,7 @@ def time_sampling(data : pd.DataFrame,
                   interval_count : int =None,
                   time_index : str ='Time',) -> np.ndarray:
     ''' time samping '''
+    
     excel_time = pd.to_datetime(data[time_index], errors='coerce')
     if start_time is None:
         start_index=0

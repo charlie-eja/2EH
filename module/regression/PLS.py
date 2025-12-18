@@ -10,10 +10,6 @@ def pca_train(data,pca_components=2):
     return pca_model,pca_vector,pca_variance,pca_variance_ratio,latent_data
 
 
-
-
-
-
 def pca_test():
     # 假資料
     data = np.array([[1, 2, 3],
