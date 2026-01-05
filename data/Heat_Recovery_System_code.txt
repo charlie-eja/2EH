@@ -1,0 +1,26 @@
+Heat_Recovery_System
+
+input_list = ['ML2EH_TI-141-11A.PV','ML2EH_TI-141-11B.PV','ML2EH_TI-141-11C.PV',
+                      'ML2EH_TI-134-1.PV','ML2EH_TI-134-2.PV','ML2EH_TI-126-4.PV',
+                      'ML2EH_TI-126-5.PV','ML2EH_TI-126-6.PV','ML2EH_TI-126-7.PV',
+                      'ML2EH_TI-127-1.PV','ML2EH_TI-127-2.PV','ML2EH_TI-128-3.PV',
+                      'ML2EH_TI-126-8.PV','ML2EH_TI-126-2.PV','ML2EH_FIC-115-3.PV',
+                      ]
+output_list = ['ML2EH_FI-165-1.PV','ML2EH_H143-O2','ML2EH_TI-128-1.PV',
+                       'ML2EH_TIC-126-1.PV',
+                       ] #'ML2EH_TI-126-3.PV',
+
+data_title = data.columns.tolist()[1:]
+data_title = [s[6:] for s in data_title]
+
+start_time_list=['2023-01-01','2023-05-10','2023-08-13']
+end_time_list  =['2023-05-10','2023-07-22','2023-12-01']
+
+
+
+start_time_list=['2023-01-01','2023-05-20','2023-08-13']
+end_time_list  =['2023-05-10','2023-07-22','2023-12-01']
+
+
+start_time_list=['2023-01-01','2023-05-20','2023-08-13']
+end_time_list  =['2023-05-10','2023-07-02','2023-12-01']
