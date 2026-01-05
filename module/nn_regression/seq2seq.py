@@ -1,6 +1,7 @@
 from tensorflow.keras import layers, Model
 from tensorflow.keras.callbacks import LambdaCallback
 from tensorflow.keras.callbacks import EarlyStopping
+import tensorflow as tf
 import numpy as np
 
 def seq2seq_model(x : np.ndarray,
@@ -10,7 +11,8 @@ def seq2seq_model(x : np.ndarray,
                   y_hidden : int = 40,
                   batch_size : int =64,
                   epochs : int =100,
-                  verbose : int =1,):
+                  verbose : int =1,
+                  model_name:str ='model',):
     '''
     :param model_type:
     1. zero
@@ -55,7 +57,8 @@ def seq2seq_model(x : np.ndarray,
 
     model = Model([enc_inputs, dec_inputs], dec_outputs)
     model.summary()
-
+    # lr = 1e-4  # fine-tune 常用：1e-4 或 1e-5
+    # opt = tf.keras.optimizers.Adam(learning_rate=lr)
     model.compile(optimizer='adam', loss='mse')
 
     early_stop = EarlyStopping(
@@ -70,6 +73,7 @@ def seq2seq_model(x : np.ndarray,
               epochs=epochs,
               verbose=verbose,
               callbacks=[early_stop],)
+    model.save(f"{model_name}.keras")
     return model,history
 
 
