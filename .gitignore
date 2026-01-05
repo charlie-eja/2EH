@@ -6,4 +6,4 @@ __pycache__/
 *.pyc
 
 # Data files
-data/Heat_Recovery_System.xlsx
+data/*.xlsx

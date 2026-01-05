@@ -14,11 +14,11 @@ from module.nn_regression import seq2seq
 from module.nn_plot_figure import seq2seq_plot
 
 
-def simulation_pca(data_title,x,y=None,components=2,plot_samping=-1):
+def simulation_pca(data_title,x,y=None,components=2,plot_samping=-1,save_or_not=0):
     # x, y = load_iris(return_X_y=True)
     normalize_data,mean_data,std_data= preprocessing.normalize_gaussian(data=x)
     pca_model,pca_vector,pca_variance,pca_variance_ratio,latent_data = (
-        PCA_EJ.pca_train(data=normalize_data,n_components=components,))
+        PCA_EJ.pca_train(data=normalize_data,n_components=components,index=data_title,save_or_not=save_or_not))
     if components==2:
         PCA_plot.pca_plot_2D_html(
             data=normalize_data,pca_vector=pca_vector,pca_variance_ratio=pca_variance_ratio,plot_samping=plot_samping,labels=y)
@@ -56,7 +56,7 @@ def simulation_tsne(x,y=None,components=2,plot_samping=-1):
 
 def main():
     try:
-        data = pd.read_excel(r'data\Isomer_Column_Process_plus.xlsx',sheet_name='Sheet2')
+        data = pd.read_excel(r'data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
         data = preprocessing.find_nan_data(data,max_gap=5)
         time.sleep(30)
 
@@ -78,7 +78,7 @@ def main():
 
 
         start_time_list = ['2023-01-01', '2023-05-20', '2023-08-13']
-        end_time_list = ['2023-05-10', '2023-07-22', '2023-12-01']
+        end_time_list = ['2023-05-10', '2023-07-02', '2023-12-01']
 
         interval_data ,data_lengths= preprocessing.multi_time_sampling(
             data,
@@ -99,12 +99,12 @@ def main():
         plot_samping=10
 
 
-        # simulation_pca(data_title, x=normalize_data,components=2,plot_samping=plot_samping)
-        # simulation_pca(data_title, x=normalize_data, components=3, plot_samping=plot_samping)
-        # simulation_tsne(x=normalize_data,components=2,plot_samping=plot_samping)
-        # simulation_tsne(x=normalize_data, components=3, plot_samping=plot_samping)
-        # simulation_umap(x=normalize_data, components=2, plot_samping=plot_samping)
-        # simulation_umap(x=normalize_data,components=3,plot_samping=plot_samping)
+        simulation_pca(data_title, x=normalize_data,components=2,plot_samping=plot_samping,save_or_not=1)
+        simulation_pca(data_title, x=normalize_data, components=3, plot_samping=plot_samping)
+        simulation_tsne(x=normalize_data,components=2,plot_samping=plot_samping)
+        simulation_tsne(x=normalize_data, components=3, plot_samping=plot_samping)
+        simulation_umap(x=normalize_data, components=2, plot_samping=plot_samping)
+        simulation_umap(x=normalize_data,components=3,plot_samping=plot_samping)
 
 
         all_x,all_y=preprocessing.multi_sort_3D_data(normalize_data,
