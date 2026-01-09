@@ -237,5 +237,33 @@ def k_fold(all_length,i,equal_division):
     train_idx = np.hstack([folds[j] for j in range(equal_division) if j != i])
     return train_idx, test_idx
 
+def data_differencing(file_name,sheet_name='Sheet2',
+                      time_col = "Time",
+                      value_cols=None,
+                      output_filename="output_filled.xlsx"):
+    df = pd.read_excel(file_name, sheet_name=sheet_name)
+    print(df.columns.tolist())
+
+    # time_col = "Time"
+    # value_cols = ["ML2EH_S232-IBAL", "ML2EH_S232-NBAL"]
+
+    for c in value_cols:
+        df[c] = pd.to_numeric(df[c], errors="coerce")
+
+    df[time_col] = pd.to_datetime(df[time_col])
+    df = df.sort_values(time_col)
+
+    df = df.set_index(time_col).asfreq("H")
+
+    df_interp = df.copy()
+    df_interp[value_cols] = df_interp[value_cols].interpolate(method="time")
+
+    df_interp[value_cols] = df_interp[value_cols].ffill().bfill()
+
+    df_interp = df_interp.reset_index()
+    df_interp.to_excel(output_filename, index=False)
+
+    print(f"done -> {output_filename}")
+
 if __name__ == '__main__':
     data=pd.read_excel(r'data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')

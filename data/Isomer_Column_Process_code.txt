@@ -1,13 +1,18 @@
-        input_list = ['ML2EH_S232-IBAL','ML2EH_S232-NBAL','ML2EH_FIC-220-2.PV',
+        input_list = ['ML2EH_FIC-220-2.PV',
                       'ML2EH_TI-252-2.PV','ML2EH_FIC-220-3.PV','ML2EH_TI-220-2.PV',
                       'ML2EH_FIC-280-1.PV','ML2EH_FIC-223-1.PV','ML2EH_TI-223-1.PV',
-                      ]
-        output_list = ['ML2EH_TI-223-2.PV','ML2EH_TI-204-1.PV','ML2EH_TI-204-2.PV',
+
+                        'ML2EH_PIC-204-1.PV','ML2EH_TI-223-2.PV',
+                        'ML2EH_TI-224-1.PV', 'ML2EH_FIC-204-1.PV', 'ML2EH_TI-204-14.PV',
+                        'ML2EH_FIC-225-1.PV', 'ML2EH_AI-204-1B.PV', 'ML2EH_FI-226-1A.PV',
+                        'ML2EH_AI-204-1A.PV',
+                      ]#+["ML2EH_S232-IBAL", "ML2EH_S232-NBAL","Station Pressure",
+                                                    # "Sea Level Pressure","Air Temperature","Dew Point Temperature",
+                                                    # "Relative Humidity","Wind Speed","Wind Direction",
+                                                    # "Maximum Gust", "Maximum Gust Direction", "Precipitation",]
+        output_list = ['ML2EH_TI-204-1.PV','ML2EH_TI-204-2.PV',
                        'ML2EH_TI-204-3.PV','ML2EH_TIC-204-4.PV','ML2EH_TI-204-5.PV',
                        'ML2EH_TI-204-6.PV','ML2EH_TI-204-7.PV','ML2EH_TI-204-8.PV',
                        'ML2EH_TI-204-9.PV','ML2EH_TI-204-10.PV','ML2EH_TI-204-11.PV',
-                       'ML2EH_TI-204-12.PV','ML2EH_TI-204-13.PV','ML2EH_PIC-204-1.PV',
-                       'ML2EH_TI-224-1.PV','ML2EH_FIC-204-1.PV','ML2EH_TI-204-14.PV',
-                       'ML2EH_FIC-225-1.PV','ML2EH_AI-204-1B.PV','ML2EH_FI-226-1A.PV',
-                       'ML2EH_AI-204-1A.PV',
+                       'ML2EH_TI-204-12.PV','ML2EH_TI-204-13.PV'
                        ]
