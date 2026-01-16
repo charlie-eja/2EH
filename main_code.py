@@ -6,6 +6,7 @@ import numpy as np
 from sklearn.datasets import load_iris
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from tensorflow import keras
 
 from module.Utilities import preprocessing , error_callback ,combine_weather_data
 from module.dim_reduce import PCA as PCA_EJ ,UMAP as UMAP_EJ ,tSNE as tSNE_EJ
@@ -69,26 +70,35 @@ def main():
         #                                             "Maximum Gust", "Maximum Gust Direction", "Precipitation",],
         #                                 output_filename=r'data\Isomer_Column_Process_w_plus.xlsx',)
 
-        data = pd.read_excel(r'data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
+        data = pd.read_excel(r'data\Isomer_Column_Process_w_plus.xlsx',sheet_name='Sheet1')
         data = preprocessing.find_nan_data(data,max_gap=5)
 
-        input_list = ['ML2EH_TI-141-11A.PV', 'ML2EH_TI-141-11B.PV', 'ML2EH_TI-141-11C.PV',
-                      'ML2EH_TI-134-1.PV', 'ML2EH_TI-134-2.PV', 'ML2EH_TI-126-4.PV',
-                      'ML2EH_TI-126-5.PV', 'ML2EH_TI-126-6.PV', 'ML2EH_TI-126-7.PV',
-                      'ML2EH_TI-127-1.PV', 'ML2EH_TI-127-2.PV', 'ML2EH_TI-128-3.PV',
-                      'ML2EH_TI-126-8.PV', 'ML2EH_TI-126-2.PV', 'ML2EH_FIC-115-3.PV',
-                      ]
-        output_list = ['ML2EH_FI-165-1.PV', 'ML2EH_H143-O2', 'ML2EH_TI-128-1.PV',
-                       'ML2EH_TIC-126-1.PV',
-                       ]  # 'ML2EH_TI-126-3.PV',
+        input_list = ['ML2EH_FIC-220-2.PV',
+                      'ML2EH_TI-252-2.PV','ML2EH_FIC-220-3.PV','ML2EH_TI-220-2.PV',
+                      'ML2EH_FIC-280-1.PV','ML2EH_FIC-223-1.PV','ML2EH_TI-223-1.PV',
+
+                        'ML2EH_PIC-204-1.PV','ML2EH_TI-223-2.PV',
+                        'ML2EH_TI-224-1.PV', 'ML2EH_FIC-204-1.PV', 'ML2EH_TI-204-14.PV',
+                        'ML2EH_FIC-225-1.PV', 'ML2EH_AI-204-1B.PV', 'ML2EH_FI-226-1A.PV',
+                        'ML2EH_AI-204-1A.PV',
+                      ]#+["ML2EH_S232-IBAL", "ML2EH_S232-NBAL","Station Pressure",
+                                                    # "Sea Level Pressure","Air Temperature","Dew Point Temperature",
+                                                    # "Relative Humidity","Wind Speed","Wind Direction",
+                                                    # "Maximum Gust", "Maximum Gust Direction", "Precipitation",]
+        output_list = ['ML2EH_TI-204-1.PV','ML2EH_TI-204-2.PV',
+                       'ML2EH_TI-204-3.PV','ML2EH_TIC-204-4.PV','ML2EH_TI-204-5.PV',
+                       'ML2EH_TI-204-6.PV','ML2EH_TI-204-7.PV','ML2EH_TI-204-8.PV',
+                       'ML2EH_TI-204-9.PV','ML2EH_TI-204-10.PV','ML2EH_TI-204-11.PV',
+                       'ML2EH_TI-204-12.PV','ML2EH_TI-204-13.PV'
+                       ]
 
         input_index_list,output_index_list=preprocessing.find_index(data.columns,input_list,output_list)
 
         data_title = data.columns.tolist()[1:]
         data_title = [s[6:] for s in data_title]
 
-        start_time_list = ['2023-01-01', '2023-05-20', '2023-08-13']
-        end_time_list = ['2023-05-10', '2023-07-02', '2023-12-01']
+        start_time_list = ['2023-01-01',  ] #'2023-06-01',
+        end_time_list = [ '2023-11-30', ]#'2023-05-10',
 
         interval_data ,data_lengths= preprocessing.multi_time_sampling(
             data,
@@ -96,30 +106,31 @@ def main():
             end_time_list,
             interval_count=3600,
             time_index='Time',)
-        for i in range(18):
+        for i in range(len(input_list+output_list)):
             plt.figure()
             plt.plot(interval_data[:,i],'b-',label='Time')
-            # plt.title('ML2EH_TI-126-8.PV')
-            plt.title(i)
+            plt.title(data_title[i])
 
-        int('d')
+
+
+        # int('d')
 
 
 
         normalize_data, mean_data, std_data = preprocessing.normalize_gaussian(data=interval_data)
-
+        # normalize_data_fit = preprocessing.fix_outlier_(normalize_data, z_th=5.0)
 
         plot_samping=10
 
 
-        # simulation_pca(data_title, normalize_data=normalize_data,components=2,plot_samping=plot_samping,save_or_not=1)
-        # simulation_pca(data_title, normalize_data=normalize_data, components=3, plot_samping=plot_samping)
-        # simulation_tsne(normalize_data=normalize_data,components=2,plot_samping=plot_samping)
-        # simulation_tsne(normalize_data=normalize_data, components=3, plot_samping=plot_samping)
-        # simulation_umap(normalize_data=normalize_data, components=2, plot_samping=plot_samping)
-        # simulation_umap(normalize_data=normalize_data,components=3,plot_samping=plot_samping)
+        simulation_pca(data_title, normalize_data=normalize_data,components=2,plot_samping=plot_samping,save_or_not=1)
+        simulation_pca(data_title, normalize_data=normalize_data, components=3, plot_samping=plot_samping)
+        simulation_tsne(normalize_data=normalize_data,components=2,plot_samping=plot_samping)
+        simulation_tsne(normalize_data=normalize_data, components=3, plot_samping=plot_samping)
+        simulation_umap(normalize_data=normalize_data, components=2, plot_samping=plot_samping)
+        simulation_umap(normalize_data=normalize_data,components=3,plot_samping=plot_samping)
 
-
+        # int('s')
         all_x,all_y=preprocessing.multi_sort_3D_data(normalize_data,
                                                      data_lengths=data_lengths,
                                                      jump_step=1,
@@ -127,9 +138,6 @@ def main():
                                                      output_index=output_index_list,
                                                      input_time_step=24,
                                                      output_time_step=10) # all_x[0~input_time_step], all_y[input_time_step~output_time_step]
-
-
-
 
 
         equal_division=10
@@ -140,13 +148,17 @@ def main():
             x_hidden = all_x.shape[2] + 4
             y_hidden = all_x.shape[2] + 4
             model_type = 'zero'
-            seq2seq_model, history = seq2seq.seq2seq_model(x=all_x[train_idx],
-                                                           y=all_y[train_idx],
-                                                           epochs=100,
-                                                           x_hidden=x_hidden,
-                                                           y_hidden=y_hidden,
-                                                           model_type=model_type,
-                                                           model_name=f'nn_model/seq {i+1}_{equal_division} model')
+            train_or_not=1
+            if train_or_not==1:
+                seq2seq_model, history = seq2seq.seq2seq_model(x=all_x[train_idx],
+                                                               y=all_y[train_idx],
+                                                               epochs=100,
+                                                               x_hidden=x_hidden,
+                                                               y_hidden=y_hidden,
+                                                               model_type=model_type,
+                                                               model_name=f'nn_model/seq {i+1}_{equal_division} model')
+            else:
+                seq2seq_model = keras.models.load_model(f"nn_model/seq {i+1}_{equal_division} model.keras")
             # seq2seq_plot.plot_loss(history=history)
             x_test = all_x[test_idx]
             y_test = all_y[test_idx]
@@ -157,6 +169,10 @@ def main():
                                           model = seq2seq_model,
                                           time_step=10,
                                           model_type=model_type)
+
+
+
+
             y_pred = y_pred * std_data[output_index_list] + mean_data[output_index_list]
             y_test = y_test * std_data[output_index_list] + mean_data[output_index_list]
 
@@ -191,12 +207,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
-def main():
-    print('A')
-    print('A')
-    print('A')
-    print('A')

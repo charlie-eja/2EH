@@ -265,5 +265,21 @@ def data_differencing(file_name,sheet_name='Sheet2',
 
     print(f"done -> {output_filename}")
 
+
+
+def fix_outlier_(x, z_th=5.0):
+    x = np.asarray(x, dtype=float)
+    y = x.copy()
+    mask = np.abs(y) > z_th
+    if y.shape[0] > 0:
+        mask[0] = False
+    idx = np.where(mask)[0]
+    for i in idx:
+        y[i] = y[i - 1]
+    return y
+
+
+
+
 if __name__ == '__main__':
     data=pd.read_excel(r'data\Heat_Recovery_System.xlsx',sheet_name='Sheet2')
