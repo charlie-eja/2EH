@@ -94,11 +94,12 @@ def main():
 
         input_index_list,output_index_list=preprocessing.find_index(data.columns,input_list,output_list)
 
+
         data_title = data.columns.tolist()[1:]
         data_title = [s[6:] for s in data_title]
 
         start_time_list = ['2023-01-01',  ] #'2023-06-01',
-        end_time_list = [ '2023-11-30', ]#'2023-05-10',
+        end_time_list = [ '2023-11-30', ]#'2023-05-10','2023-11-30',
 
         interval_data ,data_lengths= preprocessing.multi_time_sampling(
             data,
@@ -148,7 +149,7 @@ def main():
             x_hidden = all_x.shape[2] + 4
             y_hidden = all_x.shape[2] + 4
             model_type = 'zero'
-            train_or_not=1
+            train_or_not=0
             if train_or_not==1:
                 seq2seq_model, history = seq2seq.seq2seq_model(x=all_x[train_idx],
                                                                y=all_y[train_idx],
@@ -198,6 +199,9 @@ def main():
         print(f'end_time_list {end_time_list}')
         print(np.cumsum(data_lengths))
 
+
+        print(start_time_list)
+        print(end_time_list)
 
 
 
