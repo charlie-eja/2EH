@@ -57,8 +57,6 @@ def seq2seq_model(x : np.ndarray,
 
     model = Model([enc_inputs, dec_inputs], dec_outputs)
     model.summary()
-    # lr = 1e-4  # fine-tune 常用：1e-4 或 1e-5
-    # opt = tf.keras.optimizers.Adam(learning_rate=lr)
     model.compile(optimizer='adam', loss='mse')
 
     early_stop = EarlyStopping(
