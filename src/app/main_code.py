@@ -141,11 +141,6 @@ def main():
                                                      output_time_step=10) # all_x[0~input_time_step], all_y[input_time_step~output_time_step]
 
 
-<<<<<<< HEAD:src/app/main_code.py
-
-
-=======
->>>>>>> 861da8f7ff36ed650c32c05133a1a58a47ceea9e:main_code.py
         equal_division=10
         all_y_test=[]
         all_y_pred=[]
@@ -216,15 +211,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-<<<<<<< HEAD:src/app/main_code.py
-
-
-
-
-def main():
-    print('A')
-    print('A')
-    print('A')
-    print('A')
-=======
->>>>>>> 861da8f7ff36ed650c32c05133a1a58a47ceea9e:main_code.py
